@@ -1,0 +1,45 @@
+# SwiftFormat configuration for SimSim
+# https://github.com/nicklockwood/SwiftFormat
+
+--swiftversion 5.10
+--exclude Pods,build,DerivedData,Release,scripts/generated,SimSim.xcodeproj
+
+# formatting
+--indent 4
+--maxwidth 140
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections before-first
+--wrapreturntype if-multiline
+--closingparen balanced
+--commas inline
+--trimwhitespace always
+--semicolons never
+--linebreaks lf
+--ranges no-space
+--operatorfunc spaced
+--elseposition same-line
+--guardelse same-line
+--empty void
+--stripunusedargs closure-only
+--voidtype void
+--typeattributes preserve
+--extensionacl on-declarations
+--patternlet inline
+
+# organization
+--marktypes never
+--markextensions never
+--redundanttype inferred
+
+# rule toggles
+--enable isEmpty
+--enable redundantSelf
+--enable redundantReturn
+--enable redundantVoidReturnType
+--enable strongOutlets
+--enable trailingCommas
+--enable wrapMultilineStatementBraces
+--enable blankLinesBetweenScopes
+--disable wrapMultilineStatementBraces
+--disable redundantExtensionACL
