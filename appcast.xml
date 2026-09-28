@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>SimSim</title>
+        <item>
+            <title>2.0.0</title>
+            <pubDate>Mon, 28 Sep 2026 23:37:24 +0800</pubDate>
+            <link>https://github.com/wangwanjie/simsim/releases/tag/v2.0.0</link>
+            <sparkle:version>1</sparkle:version>
+            <sparkle:shortVersionString>2.0.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/wangwanjie/simsim/releases/download/v2.0.0/SimSim_v2.0.0.dmg" length="1655719" type="application/octet-stream" sparkle:edSignature="vZOWIVQaU3kJzIIJP+UDQSSbIswtYpPyvbhrzWPTZXJwQaoT9I74zE605KelFMcViL/yOcIdxxSJJ+bhZRqXBA==" />
+            <description>&lt;p&gt;&lt;strong&gt;Full Changelog&lt;/strong&gt;: &lt;a href="https://github.com/wangwanjie/simsim/commits/v2.0.0"&gt;https://github.com/wangwanjie/simsim/commits/v2.0.0&lt;/a&gt;&lt;/p&gt;</description>
+        </item>
+        <link>https://github.com/wangwanjie/simsim</link>
+        <description>SimSim release feed.</description>
+        <language>en</language>
+    </channel>
+</rss>

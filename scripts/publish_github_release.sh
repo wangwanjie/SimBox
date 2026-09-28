@@ -57,10 +57,13 @@ read_plist_string() {
 
 extract_github_repo_from_url() {
     local url="$1"
-    if [[ "$url" =~ ^https://github\.com/([^/]+)/([^/]+?)(\.git)?/?$ ]]; then
+    # 剥掉尾部 /, .git，剥掉 https:// 或 git@ 前缀，再切 owner/repo。
+    local stripped="${url%/}"
+    stripped="${stripped%.git}"
+    if [[ "$stripped" =~ ^https://github\.com/([^/]+)/([^/]+)$ ]]; then
         printf '%s/%s\n' "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}"; return 0
     fi
-    if [[ "$url" =~ ^git@github\.com:([^/]+)/([^/]+?)(\.git)?$ ]]; then
+    if [[ "$stripped" =~ ^git@github\.com:([^/]+)/([^/]+)$ ]]; then
         printf '%s/%s\n' "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}"; return 0
     fi
     return 1
@@ -89,8 +92,13 @@ find_latest_dmg() {
 }
 
 infer_version_from_dmg() {
-    local n; n="$(basename "$1")"
-    [[ "$n" =~ ^SimSim_(.+)\.dmg$ ]] && { printf '%s\n' "${BASH_REMATCH[1]}"; return 0; }
+    local n raw
+    n="$(basename "$1")"
+    if [[ "$n" =~ ^SimSim_(.+)\.dmg$ ]]; then
+        raw="${BASH_REMATCH[1]}"
+        printf '%s\n' "${raw#v}"
+        return 0
+    fi
     return 1
 }
 

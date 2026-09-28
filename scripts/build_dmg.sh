@@ -33,6 +33,25 @@ current_signing_authority() {
         | sed -n 's/^Authority=\(Developer ID Application:.*\)$/\1/p' | head -1
 }
 
+# 从 keychain 里挑一个 Developer ID Application 身份。指定 team ID 优先匹配。
+find_developer_id_identity() {
+    local team_id="${1:-}"
+    local matches
+    matches="$(security find-identity -v -p codesigning 2>/dev/null | grep 'Developer ID Application')"
+    if [[ -z "$matches" ]]; then
+        return 1
+    fi
+    if [[ -n "$team_id" ]]; then
+        local hit
+        hit="$(printf '%s\n' "$matches" | grep "($team_id)" | head -1)"
+        if [[ -n "$hit" ]]; then
+            printf '%s\n' "$hit" | sed -E 's/^[[:space:]]*[0-9]+\)[[:space:]]+[A-F0-9]+[[:space:]]+"(.*)"[[:space:]]*$/\1/'
+            return 0
+        fi
+    fi
+    printf '%s\n' "$matches" | head -1 | sed -E 's/^[[:space:]]*[0-9]+\)[[:space:]]+[A-F0-9]+[[:space:]]+"(.*)"[[:space:]]*$/\1/'
+}
+
 verify_signature() {
     local target_path="$1" target_name="$2" sign_info
     sign_info="$(codesign -dv --verbose=4 "$target_path" 2>&1)"
@@ -120,14 +139,26 @@ if [[ ! -d "$APP_PATH" ]]; then
     exit 1
 fi
 
-# 检查是否有 Developer ID 签名，有则重签、公证
-SIGNING_AUTHORITY="$(current_signing_authority "$APP_PATH")"
-if [[ -n "$SIGNING_AUTHORITY" && "$DO_NOTARIZE" == true ]]; then
-    echo "识别到签名身份: $SIGNING_AUTHORITY"
-    resign_for_notarization "$SIGNING_AUTHORITY" "$APP_PATH"
-    verify_signature "$APP_PATH" "SimSim.app"
+# archive 出来通常是 adhoc / Apple Development 签名，公证必须换成 Developer ID Application。
+SIGNING_AUTHORITY=""
+if [[ "$DO_NOTARIZE" == true ]]; then
+    SIGNING_AUTHORITY="$(current_signing_authority "$APP_PATH")"
+    if [[ -z "$SIGNING_AUTHORITY" ]]; then
+        # 读工程里的 DEVELOPMENT_TEAM 优先匹配
+        TEAM_ID="$(grep -m1 'DEVELOPMENT_TEAM' "$PBXPROJ" | sed 's/.*DEVELOPMENT_TEAM = \([^;]*\);/\1/' | tr -d ' "')"
+        SIGNING_AUTHORITY="$(find_developer_id_identity "$TEAM_ID" || true)"
+    fi
+    if [[ -n "$SIGNING_AUTHORITY" ]]; then
+        echo "使用签名身份: $SIGNING_AUTHORITY"
+        resign_for_notarization "$SIGNING_AUTHORITY" "$APP_PATH"
+        verify_signature "$APP_PATH" "SimSim.app"
+    else
+        echo "错误: keychain 里找不到 Developer ID Application 身份，无法公证。" >&2
+        echo "运行 security find-identity -v -p codesigning 检查。" >&2
+        exit 1
+    fi
 else
-    echo "未识别到 Developer ID 签名或跳过公证，将保留原签名。"
+    echo "跳过公证，保留 archive 原始签名。"
 fi
 
 # 用全局 create_pretty_dmg.sh 生成 DMG

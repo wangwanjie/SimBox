@@ -65,11 +65,13 @@ read_plist_string() {
 
 extract_github_repo_from_url() {
     local url="$1"
-    if [[ "$url" =~ ^https://github\.com/([^/]+)/([^/]+?)(\.git)?/?$ ]]; then
+    local stripped="${url%/}"
+    stripped="${stripped%.git}"
+    if [[ "$stripped" =~ ^https://github\.com/([^/]+)/([^/]+)$ ]]; then
         printf '%s/%s\n' "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}"
         return 0
     fi
-    if [[ "$url" =~ ^git@github\.com:([^/]+)/([^/]+?)(\.git)?$ ]]; then
+    if [[ "$stripped" =~ ^git@github\.com:([^/]+)/([^/]+)$ ]]; then
         printf '%s/%s\n' "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}"
         return 0
     fi
