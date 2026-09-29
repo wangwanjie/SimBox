@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# 归档 SimSim 为 Release .app，再用全局 create_pretty_dmg.sh 生成 DMG，可选公证。
+# 归档 SimBox 为 Release .app，再用全局 create_pretty_dmg.sh 生成 DMG，可选公证。
 #
 # 用法:
 #   ./scripts/build_dmg.sh [--keychain-profile PROFILE] [--no-notarize] [--skip-archive]
@@ -11,14 +11,14 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-SCHEME="SimSim"
-PROJECT="SimSim.xcodeproj"
+SCHEME="SimBox"
+PROJECT="SimBox.xcodeproj"
 CONFIGURATION="Release"
 BUILD_DIR="$PROJECT_DIR/build"
 DERIVED_DATA="$BUILD_DIR/DerivedData"
-ARCHIVE_PATH="$BUILD_DIR/SimSim.xcarchive"
+ARCHIVE_PATH="$BUILD_DIR/SimBox.xcarchive"
 DMG_OUTPUT_DIR="$BUILD_DIR/dmg"
-APP_ENTITLEMENTS="$PROJECT_DIR/SimSim/SimSim.entitlements"
+APP_ENTITLEMENTS="$PROJECT_DIR/SimBox/SimBox.entitlements"
 KEYCHAIN_PROFILE="vanjay_mac_stapler"
 DO_NOTARIZE=true
 DO_ARCHIVE=true
@@ -110,7 +110,7 @@ require_command create_pretty_dmg.sh
 cd "$PROJECT_DIR"
 
 # 读取版本
-PBXPROJ="$PROJECT_DIR/SimSim.xcodeproj/project.pbxproj"
+PBXPROJ="$PROJECT_DIR/SimBox.xcodeproj/project.pbxproj"
 VERSION=$(grep -m1 "MARKETING_VERSION" "$PBXPROJ" | sed 's/.*MARKETING_VERSION = \([^;]*\);/\1/' | tr -d ' ')
 if [[ -z "$VERSION" ]]; then
     echo "错误: 无法读取 MARKETING_VERSION" >&2
@@ -118,7 +118,7 @@ if [[ -z "$VERSION" ]]; then
 fi
 echo "版本: $VERSION"
 
-APP_PATH="$ARCHIVE_PATH/Products/Applications/SimSim.app"
+APP_PATH="$ARCHIVE_PATH/Products/Applications/SimBox.app"
 
 if [[ "$DO_ARCHIVE" == true ]]; then
     echo "归档 $SCHEME (Release, arm64 + x86_64)..."
@@ -151,7 +151,7 @@ if [[ "$DO_NOTARIZE" == true ]]; then
     if [[ -n "$SIGNING_AUTHORITY" ]]; then
         echo "使用签名身份: $SIGNING_AUTHORITY"
         resign_for_notarization "$SIGNING_AUTHORITY" "$APP_PATH"
-        verify_signature "$APP_PATH" "SimSim.app"
+        verify_signature "$APP_PATH" "SimBox.app"
     else
         echo "错误: keychain 里找不到 Developer ID Application 身份，无法公证。" >&2
         echo "运行 security find-identity -v -p codesigning 检查。" >&2
@@ -166,12 +166,12 @@ mkdir -p "$DMG_OUTPUT_DIR"
 echo "生成 DMG..."
 create_pretty_dmg.sh \
     --app-path "$APP_PATH" \
-    --dmg-name "SimSim" \
+    --dmg-name "SimBox" \
     --append-version \
     --output-dir "$DMG_OUTPUT_DIR"
 
-# 找刚生成的 DMG（形如 SimSim_2.0.0.dmg）
-DMG_PATH="$(ls -t "$DMG_OUTPUT_DIR"/SimSim*.dmg 2>/dev/null | head -1)"
+# 找刚生成的 DMG（形如 SimBox_2.1.0.dmg）
+DMG_PATH="$(ls -t "$DMG_OUTPUT_DIR"/SimBox*.dmg 2>/dev/null | head -1)"
 if [[ -z "$DMG_PATH" ]]; then
     echo "错误: 未找到生成的 DMG" >&2
     exit 1

@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AA0000000000000000000401"
-               BuildableName = "SimSim.app"
-               BlueprintName = "SimSim"
-               ReferencedContainer = "container:SimSim.xcodeproj">
+               BuildableName = "SimBox.app"
+               BlueprintName = "SimBox"
+               ReferencedContainer = "container:SimBox.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AA0000000000000000000401"
-            BuildableName = "SimSim.app"
-            BlueprintName = "SimSim"
-            ReferencedContainer = "container:SimSim.xcodeproj">
+            BuildableName = "SimBox.app"
+            BlueprintName = "SimBox"
+            ReferencedContainer = "container:SimBox.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AA0000000000000000000401"
-            BuildableName = "SimSim.app"
-            BlueprintName = "SimSim"
-            ReferencedContainer = "container:SimSim.xcodeproj">
+            BuildableName = "SimBox.app"
+            BlueprintName = "SimBox"
+            ReferencedContainer = "container:SimBox.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

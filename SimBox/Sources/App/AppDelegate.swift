@@ -9,7 +9,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         statusItem.isVisible = true
         statusItem.behavior = []
-        statusItem.autosaveName = "cn.vanjay.SimSim.status"
+        statusItem.autosaveName = "cn.vanjay.SimBox.status"
 
         statusMenuController = StatusMenuController(statusItem: statusItem)
 

@@ -1,6 +1,6 @@
-# SimSim
+# SimBox
 
-macOS 菜单栏工具，快速定位 iOS/watchOS/tvOS 模拟器上已安装应用的沙盒目录。原项目：[dsmelov/simsim](https://github.com/dsmelov/simsim)，本 fork 面向 Xcode 27 / macOS 26+ 重写。
+macOS 菜单栏工具，快速定位 iOS/watchOS/tvOS 模拟器上已安装应用的沙盒目录。原项目：[dsmelov/simsim](https://github.com/dsmelov/simsim)，本 fork 面向 Xcode 27 / macOS 26+ 重写并改名为 SimBox。
 
 ![macOS 13+](https://img.shields.io/badge/macOS-13.0%2B-blue) ![Xcode 27](https://img.shields.io/badge/Xcode-27-blue) ![Swift 5.10](https://img.shields.io/badge/Swift-5.10-orange)
 
@@ -25,15 +25,15 @@ macOS 菜单栏工具，快速定位 iOS/watchOS/tvOS 模拟器上已安装应�
 要求：macOS 13+，Xcode 27。
 
 ```bash
-open SimSim.xcodeproj
+open SimBox.xcodeproj
 ```
 
-首次会解析 Sparkle SPM 包。构建后就是 `SimSim.app`。
+首次会解析 Sparkle SPM 包。构建后就是 `SimBox.app`。
 
 代码风格用 SwiftFormat 统一：
 
 ```bash
-swiftformat SimSim scripts/generate_icons.swift
+swiftformat SimBox scripts/generate_icons.swift
 ```
 
 图标是脚本生成的：
@@ -58,18 +58,18 @@ swift scripts/generate_icons.swift
 
 ## Sparkle 密钥
 
-一次性生成后放在 Keychain（account: `cn.vanjay.SimSim.sparkle`）：
+一次性生成后放在 Keychain（account: `cn.vanjay.SimBox.sparkle`）：
 
 ```bash
 SPARKLE_BIN="$(find ~/Library/Developer/Xcode/DerivedData -path '*/SourcePackages/artifacts/sparkle/Sparkle/bin' -type d | sort -r | head -1)"
-"$SPARKLE_BIN/generate_keys" --account cn.vanjay.SimSim.sparkle
+"$SPARKLE_BIN/generate_keys" --account cn.vanjay.SimBox.sparkle
 ```
 
-对应的 public key 已写入 `SimSim/Info.plist` 的 `SUPublicEDKey`。
+对应的 public key 已写入 `SimBox/Info.plist` 的 `SUPublicEDKey`。
 
 ## 版本号
 
-在 `SimSim.xcodeproj/project.pbxproj` 里改 `MARKETING_VERSION` 与 `CURRENT_PROJECT_VERSION`。当前 2.0.0。
+在 `SimBox.xcodeproj/project.pbxproj` 里改 `MARKETING_VERSION` 与 `CURRENT_PROJECT_VERSION`。当前 2.1.0。
 
 ## License
 

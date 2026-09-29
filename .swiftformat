@@ -1,8 +1,8 @@
-# SwiftFormat configuration for SimSim
+# SwiftFormat configuration for SimBox
 # https://github.com/nicklockwood/SwiftFormat
 
 --swiftversion 5.10
---exclude Pods,build,DerivedData,Release,scripts/generated,SimSim.xcodeproj
+--exclude Pods,build,DerivedData,Release,scripts/generated,SimBox.xcodeproj
 
 # formatting
 --indent 4

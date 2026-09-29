@@ -14,8 +14,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 DEFAULT_ARCHIVES_DIR="$PROJECT_DIR/build/appcast-archives"
 DEFAULT_OUTPUT_PATH="$PROJECT_DIR/appcast.xml"
-INFO_PLIST="$PROJECT_DIR/SimSim/Info.plist"
-DEFAULT_ACCOUNT="cn.vanjay.SimSim.sparkle"
+INFO_PLIST="$PROJECT_DIR/SimBox/Info.plist"
+DEFAULT_ACCOUNT="cn.vanjay.SimBox.sparkle"
 
 ARCHIVE_PATH=""
 ARCHIVES_DIR="$DEFAULT_ARCHIVES_DIR"
@@ -37,7 +37,7 @@ usage() {
   --archives-dir DIR   保存历史 DMG 的目录，默认 build/appcast-archives
   --output PATH        输出 appcast.xml 路径，默认仓库根目录
   --repo OWNER/REPO    GitHub 仓库
-  --account ACCOUNT    Sparkle EdDSA Keychain account，默认 cn.vanjay.SimSim.sparkle
+  --account ACCOUNT    Sparkle EdDSA Keychain account，默认 cn.vanjay.SimBox.sparkle
   --notes TEXT         为当前 archive 生成同名 .md 发布说明
   --notes-file FILE    为当前 archive 复制同名发布说明文件
 EOF
@@ -80,7 +80,7 @@ extract_github_repo_from_url() {
 
 detect_repo() {
     local repo_url
-    repo_url="$(read_plist_string "SimSimGitHubURL")"
+    repo_url="$(read_plist_string "SimBoxGitHubURL")"
     [[ -n "$repo_url" ]] && extract_github_repo_from_url "$repo_url" && return 0
     while IFS=$'\t' read -r _name candidate; do
         extract_github_repo_from_url "$candidate" && return 0
@@ -185,7 +185,7 @@ if [[ ${#archives[@]} -eq 0 ]]; then
     echo "错误: $ARCHIVES_DIR 中没有 DMG" >&2; exit 1
 fi
 
-TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/simsim-appcast.XXXXXX")"
+TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/simbox-appcast.XXXXXX")"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
 cp "$ARCHIVES_DIR"/*.dmg "$TMP_DIR/"
@@ -298,10 +298,10 @@ def load_release_notes_html(filename):
     return ""
 
 title = find_or_create(channel, "title")
-if not (title.text or "").strip(): title.text = "SimSim Updates"
+if not (title.text or "").strip(): title.text = "SimBox Updates"
 link = find_or_create(channel, "link"); link.text = f"https://github.com/{repo}"
 desc = find_or_create(channel, "description")
-if not (desc.text or "").strip(): desc.text = "SimSim release feed."
+if not (desc.text or "").strip(): desc.text = "SimBox release feed."
 lang = find_or_create(channel, "language")
 if not (lang.text or "").strip(): lang.text = "en"
 
@@ -312,7 +312,7 @@ for item in channel.findall("item"):
     filename = pathlib.PurePosixPath(urllib.parse.urlparse(raw_url).path).name or pathlib.Path(raw_url).name
     if not filename: continue
 
-    m = re.match(r"SimSim_(.+)\.dmg$", filename)
+    m = re.match(r"SimBox_(.+)\.dmg$", filename)
     version = m.group(1) if m else None
     if version is None:
         sv = item.find(f"{{{sparkle_ns}}}shortVersionString")

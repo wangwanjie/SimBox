@@ -35,12 +35,12 @@
 	<key>SUEnableInstallerLauncherService</key>
 	<true/>
 	<key>SUFeedURL</key>
-	<string>https://raw.githubusercontent.com/wangwanjie/simsim/master/appcast.xml</string>
+	<string>https://raw.githubusercontent.com/wangwanjie/SimBox/master/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>Oez9FxzF96qMjeaWVjuXnCJhVejpby6jxdkBIWYkJX8=</string>
 	<key>SUVerifyUpdateBeforeExtraction</key>
 	<true/>
-	<key>SimSimGitHubURL</key>
-	<string>https://github.com/wangwanjie/simsim</string>
+	<key>SimBoxGitHubURL</key>
+	<string>https://github.com/wangwanjie/SimBox</string>
 </dict>
 </plist>

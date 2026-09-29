@@ -19,17 +19,17 @@ final class StatusMenuController: NSObject {
 
     private func configureStatusButton() {
         guard let button = statusItem.button else {
-            NSLog("[SimSim] statusItem.button is nil — cannot show menu bar icon")
+            NSLog("[SimBox] statusItem.button is nil — cannot show menu bar icon")
             return
         }
         let image = NSImage(named: "MenuBarIcon")
-            ?? NSImage(systemSymbolName: "iphone.gen3", accessibilityDescription: "SimSim")
-            ?? NSImage(systemSymbolName: "iphone", accessibilityDescription: "SimSim")
+            ?? NSImage(systemSymbolName: "iphone.gen3", accessibilityDescription: "SimBox")
+            ?? NSImage(systemSymbolName: "iphone", accessibilityDescription: "SimBox")
         image?.isTemplate = true
         image?.size = NSSize(width: 18, height: 18)
         button.image = image
         button.imagePosition = .imageOnly
-        button.toolTip = "SimSim — simulator inspector"
+        button.toolTip = "SimBox — simulator inspector"
     }
 
     private func rebuildMenu() {

@@ -11,26 +11,26 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		AA0000000000000000000101 /* SimSim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimSim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA0000000000000000000101 /* SimBox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimBox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		AA0000000000000000000901 /* Exceptions for "SimSim" folder in "SimSim" target */ = {
+		AA0000000000000000000901 /* Exceptions for "SimBox" folder in "SimBox" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = AA0000000000000000000401 /* SimSim */;
+			target = AA0000000000000000000401 /* SimBox */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		AA0000000000000000000801 /* SimSim */ = {
+		AA0000000000000000000801 /* SimBox */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				AA0000000000000000000901 /* Exceptions for "SimSim" folder in "SimSim" target */,
+				AA0000000000000000000901 /* Exceptions for "SimBox" folder in "SimBox" target */,
 			);
-			path = SimSim;
+			path = SimBox;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -50,7 +50,7 @@
 		AA0000000000000000000201 = {
 			isa = PBXGroup;
 			children = (
-				AA0000000000000000000801 /* SimSim */,
+				AA0000000000000000000801 /* SimBox */,
 				AA0000000000000000000202 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -58,7 +58,7 @@
 		AA0000000000000000000202 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AA0000000000000000000101 /* SimSim.app */,
+				AA0000000000000000000101 /* SimBox.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -66,9 +66,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		AA0000000000000000000401 /* SimSim */ = {
+		AA0000000000000000000401 /* SimBox */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AA0000000000000000000701 /* Build configuration list for PBXNativeTarget "SimSim" */;
+			buildConfigurationList = AA0000000000000000000701 /* Build configuration list for PBXNativeTarget "SimBox" */;
 			buildPhases = (
 				AA0000000000000000000601 /* Sources */,
 				AA0000000000000000000501 /* Frameworks */,
@@ -79,14 +79,14 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				AA0000000000000000000801 /* SimSim */,
+				AA0000000000000000000801 /* SimBox */,
 			);
-			name = SimSim;
+			name = SimBox;
 			packageProductDependencies = (
 				AA0000000000000000000C01 /* Sparkle */,
 			);
-			productName = SimSim;
-			productReference = AA0000000000000000000101 /* SimSim.app */;
+			productName = SimBox;
+			productReference = AA0000000000000000000101 /* SimBox.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -105,7 +105,7 @@
 					};
 				};
 			};
-			buildConfigurationList = AA0000000000000000000702 /* Build configuration list for PBXProject "SimSim" */;
+			buildConfigurationList = AA0000000000000000000702 /* Build configuration list for PBXProject "SimBox" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -122,7 +122,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				AA0000000000000000000401 /* SimSim */,
+				AA0000000000000000000401 /* SimBox */,
 			);
 		};
 /* End PBXProject section */
@@ -270,15 +270,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = SimSim/SimSim.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SimBox/SimBox.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = X6B6C6U6QV;
 				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = SimSim/Info.plist;
+				INFOPLIST_FILE = SimBox/Info.plist;
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 wangwanjie. Released under the MIT License.";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -286,8 +286,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 2.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = cn.vanjay.SimSim;
+				MARKETING_VERSION = 2.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.vanjay.SimBox;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -299,15 +299,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = SimSim/SimSim.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SimBox/SimBox.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = X6B6C6U6QV;
 				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = SimSim/Info.plist;
+				INFOPLIST_FILE = SimBox/Info.plist;
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 wangwanjie. Released under the MIT License.";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -315,8 +315,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 2.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = cn.vanjay.SimSim;
+				MARKETING_VERSION = 2.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.vanjay.SimBox;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -326,7 +326,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AA0000000000000000000701 /* Build configuration list for PBXNativeTarget "SimSim" */ = {
+		AA0000000000000000000701 /* Build configuration list for PBXNativeTarget "SimBox" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AA0000000000000000000A03 /* Debug */,
@@ -335,7 +335,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AA0000000000000000000702 /* Build configuration list for PBXProject "SimSim" */ = {
+		AA0000000000000000000702 /* Build configuration list for PBXProject "SimBox" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AA0000000000000000000A01 /* Debug */,

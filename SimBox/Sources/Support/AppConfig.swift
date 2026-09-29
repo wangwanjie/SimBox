@@ -5,7 +5,7 @@ enum AppConfig {
     static let applicationIconSize: CGFloat = 24
     static let maxRecentSimulators = 5
 
-    static let homepageURL = URL(string: "https://github.com/wangwanjie/simsim")!
+    static let homepageURL = URL(string: "https://github.com/wangwanjie/SimBox")!
 
     enum ExternalApp {
         static let finder = "/System/Library/CoreServices/Finder.app"
@@ -27,7 +27,7 @@ enum AppConfig {
         static let resetContainer = "Reset app data"
         static let startAtLogin = "Launch at login"
         static let checkForUpdates = "Check for updates…"
-        static let quit = "Quit SimSim"
+        static let quit = "Quit SimBox"
     }
 
     enum SimulatorPath {

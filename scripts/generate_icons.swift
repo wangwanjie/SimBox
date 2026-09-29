@@ -1,8 +1,8 @@
 #!/usr/bin/env swift
 //
-// 生成 SimSim 的 App 图标与菜单栏图标。
+// 生成 SimBox 的 App 图标与菜单栏图标。
 // 使用: swift scripts/generate_icons.swift
-// 会写入 SimSim/Resources/Assets.xcassets/ 下的 AppIcon、MenuBarIcon 和 AppIconFallback。
+// 会写入 SimBox/Resources/Assets.xcassets/ 下的 AppIcon、MenuBarIcon 和 AppIconFallback。
 //
 
 import AppKit
@@ -10,7 +10,7 @@ import Foundation
 
 let projectDir = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
 let assetsDir = projectDir
-    .appendingPathComponent("SimSim/Resources/Assets.xcassets")
+    .appendingPathComponent("SimBox/Resources/Assets.xcassets")
 
 @discardableResult
 func writePNG(_ image: NSImage, size: CGSize, to url: URL, isTemplate: Bool = false) -> Bool {

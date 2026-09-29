@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
-# 上传 SimSim DMG 到 GitHub Releases，并同步 appcast.xml。
-# 默认上传 build/dmg/ 下最新的 SimSim_*.dmg。
+# 上传 SimBox DMG 到 GitHub Releases，并同步 appcast.xml。
+# 默认上传 build/dmg/ 下最新的 SimBox_*.dmg。
 #
 
 set -euo pipefail
@@ -9,8 +9,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 DEFAULT_DMG_DIR="$PROJECT_DIR/build/dmg"
-PBXPROJ="$PROJECT_DIR/SimSim.xcodeproj/project.pbxproj"
-INFO_PLIST="$PROJECT_DIR/SimSim/Info.plist"
+PBXPROJ="$PROJECT_DIR/SimBox.xcodeproj/project.pbxproj"
+INFO_PLIST="$PROJECT_DIR/SimBox/Info.plist"
 
 DMG_PATH=""
 REPO=""
@@ -71,7 +71,7 @@ extract_github_repo_from_url() {
 
 detect_repo() {
     local remote_url
-    remote_url="$(read_plist_string "SimSimGitHubURL")"
+    remote_url="$(read_plist_string "SimBoxGitHubURL")"
     [[ -n "$remote_url" ]] && extract_github_repo_from_url "$remote_url" && return 0
     while IFS=$'\t' read -r _name candidate; do
         extract_github_repo_from_url "$candidate" && return 0
@@ -82,7 +82,7 @@ detect_repo() {
 find_latest_dmg() {
     local latest="" mtime=0 fp
     shopt -s nullglob
-    for fp in "$DEFAULT_DMG_DIR"/SimSim*.dmg; do
+    for fp in "$DEFAULT_DMG_DIR"/SimBox*.dmg; do
         [[ -f "$fp" ]] || continue
         local m; m="$(stat -f '%m' "$fp")"
         if [[ -z "$latest" || "$m" -gt "$mtime" ]]; then latest="$fp"; mtime="$m"; fi
@@ -94,7 +94,7 @@ find_latest_dmg() {
 infer_version_from_dmg() {
     local n raw
     n="$(basename "$1")"
-    if [[ "$n" =~ ^SimSim_(.+)\.dmg$ ]]; then
+    if [[ "$n" =~ ^SimBox_(.+)\.dmg$ ]]; then
         raw="${BASH_REMATCH[1]}"
         printf '%s\n' "${raw#v}"
         return 0
@@ -154,7 +154,7 @@ VERSION="$(infer_version_from_dmg "$DMG_PATH" 2>/dev/null || read_marketing_vers
 [[ -z "$VERSION" ]] && { echo "错误: 无法推断版本号" >&2; exit 1; }
 
 [[ -z "$TAG" ]] && TAG="v$VERSION"
-[[ -z "$TITLE" ]] && TITLE="SimSim v$VERSION"
+[[ -z "$TITLE" ]] && TITLE="SimBox v$VERSION"
 
 echo "仓库: $REPO"
 echo "Tag:  $TAG"
