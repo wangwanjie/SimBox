@@ -3,14 +3,14 @@
     <channel>
         <title>SimBox</title>
         <item>
-            <title>2.0.0</title>
-            <pubDate>Mon, 28 Sep 2026 23:37:24 +0800</pubDate>
-            <link>https://github.com/wangwanjie/SimBox/releases/tag/v2.0.0</link>
-            <sparkle:version>1</sparkle:version>
-            <sparkle:shortVersionString>2.0.0</sparkle:shortVersionString>
+            <title>2.1.0</title>
+            <pubDate>Tue, 29 Sep 2026 10:15:33 +0800</pubDate>
+            <link>https://github.com/wangwanjie/SimBox/releases/tag/v2.1.0</link>
+            <sparkle:version>2</sparkle:version>
+            <sparkle:shortVersionString>2.1.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/wangwanjie/SimBox/releases/download/v2.0.0/SimBox_v2.0.0.dmg" length="1655719" type="application/octet-stream" sparkle:edSignature="vZOWIVQaU3kJzIIJP+UDQSSbIswtYpPyvbhrzWPTZXJwQaoT9I74zE605KelFMcViL/yOcIdxxSJJ+bhZRqXBA==" />
-            <description>&lt;p&gt;&lt;strong&gt;Full Changelog&lt;/strong&gt;: &lt;a href="https://github.com/wangwanjie/SimBox/commits/v2.0.0"&gt;https://github.com/wangwanjie/SimBox/commits/v2.0.0&lt;/a&gt;&lt;/p&gt;</description>
+            <enclosure url="https://github.com/wangwanjie/SimBox/releases/download/v2.1.0/SimBox_v2.1.0.dmg" length="1656383" type="application/octet-stream" sparkle:edSignature="OtwTfulo5Y8fBGO1/YfIo7M9BrIcSlNnOBXItQPj86T9PdVhxQ0sGujF+mCeHJZdviYR94ZvG8sBOG397nHwBg==" />
+            <description>&lt;p&gt;&lt;strong&gt;Full Changelog&lt;/strong&gt;: &lt;a href="https://github.com/wangwanjie/SimBox/compare/v2.0.0...v2.1.0"&gt;https://github.com/wangwanjie/SimBox/compare/v2.0.0...v2.1.0&lt;/a&gt;&lt;/p&gt;</description>
         </item>
         <link>https://github.com/wangwanjie/SimBox</link>
         <description>SimBox release feed.</description>
