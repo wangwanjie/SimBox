@@ -58,97 +58,173 @@ func drawAppIcon(size: CGFloat) -> NSImage {
     let bounds = CGRect(x: 0, y: 0, width: size, height: size)
     let radius = size * 0.225
 
-    // Rounded background with vertical gradient (indigo → violet)
+    // Rounded background with diagonal gradient (indigo → violet)
     let bgPath = CGPath(roundedRect: bounds, cornerWidth: radius, cornerHeight: radius, transform: nil)
     ctx.saveGState()
     ctx.addPath(bgPath)
     ctx.clip()
 
-    let colors = [
-        CGColor(srgbRed: 0.35, green: 0.42, blue: 0.95, alpha: 1),
-        CGColor(srgbRed: 0.62, green: 0.30, blue: 0.90, alpha: 1)
+    let bgColors = [
+        CGColor(srgbRed: 0.30, green: 0.38, blue: 0.94, alpha: 1),
+        CGColor(srgbRed: 0.60, green: 0.28, blue: 0.90, alpha: 1)
     ] as CFArray
-    let gradient = CGGradient(
+    let bgGradient = CGGradient(
         colorsSpace: CGColorSpace(name: CGColorSpace.sRGB),
-        colors: colors,
+        colors: bgColors,
         locations: [0, 1]
     )!
     ctx.drawLinearGradient(
-        gradient,
+        bgGradient,
         start: CGPoint(x: 0, y: size),
         end: CGPoint(x: size, y: 0),
         options: []
     )
 
-    // Soft highlight on top-left
+    // Soft top-left highlight
     let highlight = CGGradient(
         colorsSpace: CGColorSpace(name: CGColorSpace.sRGB),
         colors: [
-            CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.24),
+            CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.22),
             CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 0)
         ] as CFArray,
         locations: [0, 1]
     )!
     ctx.drawRadialGradient(
         highlight,
-        startCenter: CGPoint(x: size * 0.25, y: size * 0.78),
+        startCenter: CGPoint(x: size * 0.28, y: size * 0.78),
         startRadius: 0,
-        endCenter: CGPoint(x: size * 0.25, y: size * 0.78),
+        endCenter: CGPoint(x: size * 0.28, y: size * 0.78),
         endRadius: size * 0.55,
         options: []
     )
     ctx.restoreGState()
 
-    // Phone body — rounded rect centered
-    let deviceWidth = size * 0.44
-    let deviceHeight = size * 0.66
-    let deviceRadius = size * 0.09
-    let deviceRect = CGRect(
-        x: (size - deviceWidth) / 2,
-        y: (size - deviceHeight) / 2,
-        width: deviceWidth,
-        height: deviceHeight
+    // Isometric open box + phone poking out.
+    let cos30: CGFloat = 0.8660254
+    let boxScale = size * 0.34
+    let bx = boxScale
+    let bz = boxScale
+    let by = boxScale * 0.60
+
+    let projHeight = by + (bx + bz) * 0.5
+    let originX = size / 2
+    let originY = size * 0.44 - projHeight / 2
+
+    func iso(_ x: CGFloat, _ y: CGFloat, _ z: CGFloat) -> CGPoint {
+        return CGPoint(
+            x: originX + (x - z) * cos30,
+            y: originY + y + (x + z) * 0.5
+        )
+    }
+
+    // Ground shadow beneath the box
+    ctx.saveGState()
+    ctx.setShadow(
+        offset: .zero,
+        blur: size * 0.06,
+        color: CGColor(srgbRed: 0, green: 0, blue: 0, alpha: 0.55)
     )
-    let devicePath = CGPath(
-        roundedRect: deviceRect,
-        cornerWidth: deviceRadius,
-        cornerHeight: deviceRadius,
+    let shadowRect = CGRect(
+        x: originX - (bx + bz) * cos30 * 0.55,
+        y: originY - size * 0.045,
+        width: (bx + bz) * cos30 * 1.10,
+        height: size * 0.055
+    )
+    ctx.setFillColor(CGColor(srgbRed: 0, green: 0, blue: 0, alpha: 0.35))
+    ctx.fillEllipse(in: shadowRect)
+    ctx.restoreGState()
+
+    // Box palette — warm cream tones.
+    let cFront = CGColor(srgbRed: 0.98, green: 0.87, blue: 0.66, alpha: 1)
+    let cSide = CGColor(srgbRed: 0.83, green: 0.69, blue: 0.46, alpha: 1)
+    let cRim = CGColor(srgbRed: 1.00, green: 0.93, blue: 0.75, alpha: 1)
+    let cInside = CGColor(srgbRed: 0.16, green: 0.11, blue: 0.22, alpha: 1)
+
+    let fp0 = iso(0, 0, 0)
+    let fp1 = iso(bx, 0, 0)
+    let bp3 = iso(0, 0, bz)
+    let fp2 = iso(bx, by, 0)
+    let fp3 = iso(0, by, 0)
+    let sp2 = iso(bx, by, bz)
+    let rp3 = iso(0, by, bz)
+
+    // Front-right face (facing camera on the right).
+    ctx.beginPath()
+    ctx.move(to: fp0); ctx.addLine(to: fp1); ctx.addLine(to: fp2); ctx.addLine(to: fp3); ctx.closePath()
+    ctx.setFillColor(cFront); ctx.fillPath()
+
+    // Front-left face (facing camera on the left) — darker for depth.
+    ctx.beginPath()
+    ctx.move(to: fp0); ctx.addLine(to: bp3); ctx.addLine(to: rp3); ctx.addLine(to: fp3); ctx.closePath()
+    ctx.setFillColor(cSide); ctx.fillPath()
+
+    // Top rim.
+    ctx.beginPath()
+    ctx.move(to: fp3); ctx.addLine(to: fp2); ctx.addLine(to: sp2); ctx.addLine(to: rp3); ctx.closePath()
+    ctx.setFillColor(cRim); ctx.fillPath()
+
+    // Interior opening — inset rhombus, dark.
+    let wallT = boxScale * 0.09
+    let ip0 = iso(wallT, by, wallT)
+    let ip1 = iso(bx - wallT, by, wallT)
+    let ip2 = iso(bx - wallT, by, bz - wallT)
+    let ip3 = iso(wallT, by, bz - wallT)
+    ctx.beginPath()
+    ctx.move(to: ip0); ctx.addLine(to: ip1); ctx.addLine(to: ip2); ctx.addLine(to: ip3); ctx.closePath()
+    ctx.setFillColor(cInside); ctx.fillPath()
+
+    // Phone rising from the opening (billboard, facing viewer).
+    let openingCenter = iso(bx / 2, by, bz / 2)
+    let phoneW = size * 0.19
+    let phoneH = size * 0.40
+    let phoneBottomY = openingCenter.y - phoneH * 0.06
+    let phoneRect = CGRect(
+        x: openingCenter.x - phoneW / 2,
+        y: phoneBottomY,
+        width: phoneW,
+        height: phoneH
+    )
+    let phoneRadius = phoneW * 0.22
+    let phonePath = CGPath(
+        roundedRect: phoneRect,
+        cornerWidth: phoneRadius,
+        cornerHeight: phoneRadius,
         transform: nil
     )
 
+    // Phone drop shadow onto the box interior.
     ctx.saveGState()
     ctx.setShadow(
-        offset: CGSize(width: 0, height: -size * 0.02),
-        blur: size * 0.08,
-        color: CGColor(srgbRed: 0, green: 0, blue: 0, alpha: 0.28)
+        offset: CGSize(width: 0, height: -size * 0.010),
+        blur: size * 0.025,
+        color: CGColor(srgbRed: 0, green: 0, blue: 0, alpha: 0.55)
     )
-    ctx.addPath(devicePath)
-    ctx.setFillColor(CGColor(srgbRed: 0.99, green: 0.99, blue: 1, alpha: 1))
+    ctx.addPath(phonePath)
+    ctx.setFillColor(CGColor(srgbRed: 0.10, green: 0.12, blue: 0.22, alpha: 1))
     ctx.fillPath()
     ctx.restoreGState()
 
-    // Screen inset
-    let screenInset = size * 0.045
-    let screenRect = deviceRect.insetBy(dx: screenInset, dy: screenInset * 1.3)
+    // Phone screen inset.
+    let screenInset = phoneW * 0.075
+    let screenRect = phoneRect.insetBy(dx: screenInset, dy: screenInset * 1.4)
     let screenPath = CGPath(
         roundedRect: screenRect,
-        cornerWidth: deviceRadius * 0.55,
-        cornerHeight: deviceRadius * 0.55,
+        cornerWidth: phoneRadius * 0.62,
+        cornerHeight: phoneRadius * 0.62,
         transform: nil
     )
     ctx.addPath(screenPath)
-    ctx.setFillColor(CGColor(srgbRed: 0.10, green: 0.14, blue: 0.24, alpha: 1))
+    ctx.setFillColor(CGColor(srgbRed: 0.09, green: 0.12, blue: 0.22, alpha: 1))
     ctx.fillPath()
 
-    // Screen gradient shine
+    // Screen gradient wallpaper.
     ctx.saveGState()
-    ctx.addPath(screenPath)
-    ctx.clip()
+    ctx.addPath(screenPath); ctx.clip()
     let screenGrad = CGGradient(
         colorsSpace: CGColorSpace(name: CGColorSpace.sRGB),
         colors: [
-            CGColor(srgbRed: 0.30, green: 0.55, blue: 0.98, alpha: 0.75),
-            CGColor(srgbRed: 0.72, green: 0.36, blue: 0.98, alpha: 0.35)
+            CGColor(srgbRed: 0.32, green: 0.58, blue: 0.99, alpha: 0.95),
+            CGColor(srgbRed: 0.72, green: 0.36, blue: 0.98, alpha: 0.70)
         ] as CFArray,
         locations: [0, 1]
     )!
@@ -160,73 +236,34 @@ func drawAppIcon(size: CGFloat) -> NSImage {
     )
     ctx.restoreGState()
 
-    // App tiles inside the screen
-    let cols = 3
-    let rows = 4
-    let tileGap = size * 0.022
-    let tileArea = screenRect.insetBy(dx: tileGap * 2, dy: tileGap * 2.4)
-    let tileSize = min(
-        (tileArea.width - CGFloat(cols - 1) * tileGap) / CGFloat(cols),
-        (tileArea.height - CGFloat(rows - 1) * tileGap) / CGFloat(rows)
-    )
-    let tileRadius = tileSize * 0.24
-    let tileColors: [CGColor] = [
-        CGColor(srgbRed: 1, green: 0.75, blue: 0.34, alpha: 0.95),
-        CGColor(srgbRed: 0.99, green: 0.42, blue: 0.55, alpha: 0.95),
-        CGColor(srgbRed: 0.32, green: 0.86, blue: 0.66, alpha: 0.95),
-        CGColor(srgbRed: 0.42, green: 0.72, blue: 1, alpha: 0.95)
+    // A small row of app dots on the screen (visual anchor without noise).
+    let dotCount = 3
+    let dotSize = phoneW * 0.16
+    let dotGap = phoneW * 0.09
+    let dotRowWidth = CGFloat(dotCount) * dotSize + CGFloat(dotCount - 1) * dotGap
+    let dotStartX = screenRect.midX - dotRowWidth / 2
+    let dotY = screenRect.minY + phoneH * 0.10
+    let dotColors: [CGColor] = [
+        CGColor(srgbRed: 1.00, green: 0.78, blue: 0.32, alpha: 1),
+        CGColor(srgbRed: 0.99, green: 0.42, blue: 0.55, alpha: 1),
+        CGColor(srgbRed: 0.34, green: 0.86, blue: 0.66, alpha: 1)
     ]
-    let originX = tileArea.midX - (CGFloat(cols) * tileSize + CGFloat(cols - 1) * tileGap) / 2
-    let originY = tileArea.midY - (CGFloat(rows) * tileSize + CGFloat(rows - 1) * tileGap) / 2
-
-    for row in 0..<rows {
-        for col in 0..<cols {
-            let tileRect = CGRect(
-                x: originX + CGFloat(col) * (tileSize + tileGap),
-                y: originY + CGFloat(row) * (tileSize + tileGap),
-                width: tileSize,
-                height: tileSize
-            )
-            let tilePath = CGPath(
-                roundedRect: tileRect,
-                cornerWidth: tileRadius,
-                cornerHeight: tileRadius,
-                transform: nil
-            )
-            ctx.addPath(tilePath)
-            ctx.setFillColor(tileColors[(row * cols + col) % tileColors.count])
-            ctx.fillPath()
-        }
+    for i in 0..<dotCount {
+        let r = CGRect(
+            x: dotStartX + CGFloat(i) * (dotSize + dotGap),
+            y: dotY,
+            width: dotSize,
+            height: dotSize
+        )
+        ctx.addPath(CGPath(
+            roundedRect: r,
+            cornerWidth: dotSize * 0.28,
+            cornerHeight: dotSize * 0.28,
+            transform: nil
+        ))
+        ctx.setFillColor(dotColors[i])
+        ctx.fillPath()
     }
-
-    // Home indicator
-    let indicatorWidth = deviceWidth * 0.32
-    let indicatorHeight = size * 0.012
-    let indicatorRect = CGRect(
-        x: deviceRect.midX - indicatorWidth / 2,
-        y: deviceRect.minY + size * 0.028,
-        width: indicatorWidth,
-        height: indicatorHeight
-    )
-    ctx.addPath(CGPath(
-        roundedRect: indicatorRect,
-        cornerWidth: indicatorHeight / 2,
-        cornerHeight: indicatorHeight / 2,
-        transform: nil
-    ))
-    ctx.setFillColor(CGColor(srgbRed: 0.60, green: 0.62, blue: 0.72, alpha: 0.9))
-    ctx.fillPath()
-
-    // Camera dot
-    let dotSize = size * 0.03
-    ctx.addEllipse(in: CGRect(
-        x: deviceRect.midX - dotSize / 2,
-        y: deviceRect.maxY - size * 0.05,
-        width: dotSize,
-        height: dotSize
-    ))
-    ctx.setFillColor(CGColor(srgbRed: 0.18, green: 0.20, blue: 0.28, alpha: 1))
-    ctx.fillPath()
 
     image.unlockFocus()
     return image
@@ -240,57 +277,61 @@ func drawMenuBarIcon(size: CGFloat) -> NSImage {
         return image
     }
 
-    let phoneWidth = size * 0.66
-    let phoneHeight = size * 0.94
-    let outerRect = CGRect(
-        x: (size - phoneWidth) / 2,
-        y: (size - phoneHeight) / 2,
-        width: phoneWidth,
-        height: phoneHeight
-    )
-    let cornerRadius = size * 0.18
+    // A shipping-box glyph, front view. Two open flaps kicked outward on top
+    // read as "open box" even at 18pt.
+    let boxW = size * 0.72
+    let boxH = size * 0.52
+    let boxX = (size - boxW) / 2
+    let boxY = size * 0.10
+    let corner = size * 0.09
+    let strokeW: CGFloat = max(size * 0.11, 2)
 
-    // Solid rounded rectangle body (the whole shape reads even at 18pt).
-    ctx.addPath(CGPath(
-        roundedRect: outerRect,
-        cornerWidth: cornerRadius,
-        cornerHeight: cornerRadius,
+    // Box body — outlined rounded rect.
+    let body = CGPath(
+        roundedRect: CGRect(x: boxX, y: boxY, width: boxW, height: boxH),
+        cornerWidth: corner,
+        cornerHeight: corner,
         transform: nil
-    ))
+    )
+    ctx.addPath(body)
+    ctx.setStrokeColor(CGColor(gray: 0, alpha: 1))
+    ctx.setLineWidth(strokeW)
+    ctx.setLineJoin(.round)
+    ctx.strokePath()
+
+    // Center seam on the box front (short vertical tick).
+    let seamW: CGFloat = max(strokeW * 0.6, 1.5)
+    let seamH = boxH * 0.32
     ctx.setFillColor(CGColor(gray: 0, alpha: 1))
-    ctx.fillPath()
-
-    // Screen cutout — clear pixels so template rendering shows the ring.
-    let screenInset = size * 0.13
-    let screenRect = outerRect.insetBy(dx: screenInset, dy: screenInset * 1.15)
-    let screenPath = CGPath(
-        roundedRect: screenRect,
-        cornerWidth: cornerRadius * 0.55,
-        cornerHeight: cornerRadius * 0.55,
-        transform: nil
-    )
-    ctx.setBlendMode(.clear)
-    ctx.addPath(screenPath)
-    ctx.fillPath()
-    ctx.setBlendMode(.normal)
-
-    // Home indicator bar centered near the bottom of the phone.
-    let indicatorWidth = phoneWidth * 0.28
-    let indicatorHeight = max(1, size * 0.055)
-    let indicatorRect = CGRect(
-        x: outerRect.midX - indicatorWidth / 2,
-        y: outerRect.minY + size * 0.045,
-        width: indicatorWidth,
-        height: indicatorHeight
-    )
-    ctx.addPath(CGPath(
-        roundedRect: indicatorRect,
-        cornerWidth: indicatorHeight / 2,
-        cornerHeight: indicatorHeight / 2,
-        transform: nil
+    ctx.fill(CGRect(
+        x: size / 2 - seamW / 2,
+        y: boxY + boxH - seamH,
+        width: seamW,
+        height: seamH
     ))
-    ctx.setFillColor(CGColor(gray: 0, alpha: 1))
-    ctx.fillPath()
+
+    // Two lid flaps kicked outward from the top corners of the box.
+    let flapLen = boxW * 0.40
+    let flapAngle: CGFloat = .pi / 3.6 // ~50° from vertical
+    let leftAnchor = CGPoint(x: boxX + corner * 0.5, y: boxY + boxH - strokeW * 0.4)
+    let rightAnchor = CGPoint(x: boxX + boxW - corner * 0.5, y: boxY + boxH - strokeW * 0.4)
+
+    ctx.beginPath()
+    ctx.move(to: leftAnchor)
+    ctx.addLine(to: CGPoint(
+        x: leftAnchor.x - sin(flapAngle) * flapLen,
+        y: leftAnchor.y + cos(flapAngle) * flapLen
+    ))
+    ctx.setLineCap(.round)
+    ctx.strokePath()
+
+    ctx.beginPath()
+    ctx.move(to: rightAnchor)
+    ctx.addLine(to: CGPoint(
+        x: rightAnchor.x + sin(flapAngle) * flapLen,
+        y: rightAnchor.y + cos(flapAngle) * flapLen
+    ))
+    ctx.strokePath()
 
     image.unlockFocus()
     image.isTemplate = true
