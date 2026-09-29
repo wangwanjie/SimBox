@@ -4,12 +4,12 @@
         <title>SimBox</title>
         <item>
             <title>2.1.0</title>
-            <pubDate>Tue, 29 Sep 2026 10:15:33 +0800</pubDate>
+            <pubDate>Tue, 29 Sep 2026 10:40:51 +0800</pubDate>
             <link>https://github.com/wangwanjie/SimBox/releases/tag/v2.1.0</link>
             <sparkle:version>2</sparkle:version>
             <sparkle:shortVersionString>2.1.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/wangwanjie/SimBox/releases/download/v2.1.0/SimBox_v2.1.0.dmg" length="1656383" type="application/octet-stream" sparkle:edSignature="OtwTfulo5Y8fBGO1/YfIo7M9BrIcSlNnOBXItQPj86T9PdVhxQ0sGujF+mCeHJZdviYR94ZvG8sBOG397nHwBg==" />
+            <enclosure url="https://github.com/wangwanjie/SimBox/releases/download/v2.1.0/SimBox_v2.1.0.dmg" length="1646439" type="application/octet-stream" sparkle:edSignature="kpWU4lt1VR9AunG5UDg9EQlECnJ4GYqamyLul2HIaBpf98cD14n5G8bxIsDoChcDOC6QRTCuvFNDdJ0ZAp5GCg==" />
             <description>&lt;p&gt;&lt;strong&gt;Full Changelog&lt;/strong&gt;: &lt;a href="https://github.com/wangwanjie/SimBox/compare/v2.0.0...v2.1.0"&gt;https://github.com/wangwanjie/SimBox/compare/v2.0.0...v2.1.0&lt;/a&gt;&lt;/p&gt;</description>
         </item>
         <link>https://github.com/wangwanjie/SimBox</link>
