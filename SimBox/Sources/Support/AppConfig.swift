@@ -9,25 +9,6 @@ enum AppConfig {
     static let homepageURL = URL(string: "https://github.com/wangwanjie/SimBox")!
     static let releasesURL = URL(string: "https://github.com/wangwanjie/SimBox/releases")!
 
-    enum MenuTitle {
-        static let finder = "Finder"
-        static let terminal = "Terminal"
-        static let iTerm = "iTerm"
-        static let commanderOne = "Commander One"
-        static let appBundle = "App bundle in Finder"
-        static let userDefaults = "UserDefaults plist"
-        static let copyPath = "Copy path"
-        static let copyBundleID = "Copy bundle identifier"
-        static let resetContainer = "Reset app data…"
-        static let deviceFolder = "Device folder in Finder"
-        static let copyUDID = "Copy UDID"
-        static let moreSimulators = "More Simulators"
-        static let noSimulators = "No simulators with installed apps"
-        static let startAtLogin = "Launch at login"
-        static let checkForUpdates = "Check for updates…"
-        static let quit = "Quit SimBox"
-    }
-
     enum SimulatorPath {
         static let deviceInfoFileName = "device.plist"
         static let rootRelativePath = "Library/Developer/CoreSimulator/Devices"

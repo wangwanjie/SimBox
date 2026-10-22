@@ -18,12 +18,12 @@ enum MenuBuilder {
         let submenu = NSMenu()
         submenu.autoenablesItems = false
         submenu.addItem(plainItem(
-            title: AppConfig.MenuTitle.deviceFolder,
+            title: L10n.deviceFolder,
             selector: #selector(MenuTargetProxy.openInFinder(_:)),
             object: simulator.path
         ))
         submenu.addItem(plainItem(
-            title: AppConfig.MenuTitle.copyUDID,
+            title: L10n.copyUDID,
             selector: #selector(MenuTargetProxy.copyString(_:)),
             object: simulator.udid
         ))
@@ -117,14 +117,14 @@ enum MenuBuilder {
         }
         if let bundlePath {
             submenu.addItem(plainItem(
-                title: AppConfig.MenuTitle.appBundle,
+                title: L10n.appBundle,
                 selector: #selector(MenuTargetProxy.revealInFinder(_:)),
                 object: bundlePath
             ))
         }
         if let preferencesPath, FileManager.default.fileExists(atPath: preferencesPath) {
             submenu.addItem(plainItem(
-                title: AppConfig.MenuTitle.userDefaults,
+                title: L10n.userDefaults,
                 selector: #selector(MenuTargetProxy.openWithDefaultApp(_:)),
                 object: preferencesPath
             ))
@@ -132,12 +132,12 @@ enum MenuBuilder {
 
         submenu.addItem(.separator())
         submenu.addItem(plainItem(
-            title: AppConfig.MenuTitle.copyPath,
+            title: L10n.copyPath,
             selector: #selector(MenuTargetProxy.copyString(_:)),
             object: path
         ))
         submenu.addItem(plainItem(
-            title: AppConfig.MenuTitle.copyBundleID,
+            title: L10n.copyBundleID,
             selector: #selector(MenuTargetProxy.copyString(_:)),
             object: identifier
         ))
@@ -145,7 +145,7 @@ enum MenuBuilder {
         submenu.addItem(.separator())
         // 破坏性操作不分配快捷键，避免误触。
         submenu.addItem(plainItem(
-            title: AppConfig.MenuTitle.resetContainer,
+            title: L10n.resetContainer,
             selector: #selector(MenuTargetProxy.resetContainer(_:)),
             object: path
         ))
@@ -159,7 +159,7 @@ enum MenuBuilder {
 
         guard let icon = ExternalApp.realmStudio.icon(size: AppConfig.menuIconSize) else {
             let install = NSMenuItem(
-                title: "Install Realm Studio…",
+                title: L10n.installRealmStudio,
                 action: #selector(MenuTargetProxy.installRealmStudio(_:)),
                 keyEquivalent: ""
             )

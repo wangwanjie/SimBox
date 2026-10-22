@@ -8,8 +8,8 @@ final class SimulatorTests: XCTestCase {
         XCTAssertEqual(Simulator.readableRuntime(from: "com.apple.CoreSimulator.SimRuntime.tvOS-18-0"), "tvOS 18.0")
         XCTAssertEqual(Simulator.readableRuntime(from: "com.apple.CoreSimulator.SimRuntime.xrOS-2-0"), "xrOS 2.0")
         XCTAssertEqual(Simulator.readableRuntime(from: "com.apple.CoreSimulator.SimRuntime.iOS-17-0-1"), "iOS 17.0.1")
-        XCTAssertEqual(Simulator.readableRuntime(from: nil), "Unknown OS")
-        XCTAssertEqual(Simulator.readableRuntime(from: ""), "Unknown OS")
+        XCTAssertEqual(Simulator.readableRuntime(from: nil), L10n.unknownOS)
+        XCTAssertEqual(Simulator.readableRuntime(from: ""), L10n.unknownOS)
         XCTAssertEqual(Simulator.readableRuntime(from: "custom"), "custom")
     }
 
@@ -29,7 +29,7 @@ final class SimulatorTests: XCTestCase {
         // 传入的目录不带结尾斜杠时也要规范化，保证后续拼接路径正确。
         XCTAssertTrue(simulator.path.hasSuffix("/"))
         XCTAssertEqual(simulator.appGroupPath(uuid: "G"), simulator.path + "data/Containers/Shared/AppGroup/G/")
-        XCTAssertEqual(simulator.displayTitle, "iPhone 18 Pro  ·  iOS 27.0  (Booted)")
+        XCTAssertEqual(simulator.displayTitle, "iPhone 18 Pro  ·  iOS 27.0  (\(L10n.booted))")
     }
 
     func testMissingPlistReturnsNil() {
@@ -42,6 +42,6 @@ final class SimulatorTests: XCTestCase {
         let simulator = try XCTUnwrap(Simulator(devicePlistPath: folder.path + "/device.plist", folder: folder.path))
         XCTAssertEqual(simulator.state, .unknown)
         XCTAssertTrue(simulator.isDeleted)
-        XCTAssertFalse(simulator.displayTitle.contains("Booted"))
+        XCTAssertFalse(simulator.displayTitle.contains(L10n.booted))
     }
 }

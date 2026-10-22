@@ -9,22 +9,22 @@ struct ExternalApp {
     let candidatePaths: [String]
 
     static let finder = ExternalApp(
-        name: AppConfig.MenuTitle.finder,
+        name: L10n.finder,
         bundleIdentifiers: ["com.apple.finder"],
         candidatePaths: ["/System/Library/CoreServices/Finder.app"]
     )
     static let terminal = ExternalApp(
-        name: AppConfig.MenuTitle.terminal,
+        name: L10n.terminal,
         bundleIdentifiers: ["com.apple.Terminal"],
         candidatePaths: ["/System/Applications/Utilities/Terminal.app", "/Applications/Utilities/Terminal.app"]
     )
     static let iTerm = ExternalApp(
-        name: AppConfig.MenuTitle.iTerm,
+        name: "iTerm",
         bundleIdentifiers: ["com.googlecode.iterm2"],
         candidatePaths: applicationPaths("iTerm.app")
     )
     static let commanderOne = ExternalApp(
-        name: AppConfig.MenuTitle.commanderOne,
+        name: "Commander One",
         bundleIdentifiers: ["com.eltima.cmd1", "com.eltima.cmd1pro"],
         candidatePaths: applicationPaths("Commander One PRO.app") + applicationPaths("Commander One.app")
     )

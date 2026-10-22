@@ -3,14 +3,25 @@
 # 用演示数据启动 Debug 版 SimBox，弹出菜单并展开第一个 app 的子菜单，截图保存为 docs/screenshot.png。
 # 需要终端具有“屏幕录制”和“辅助功能”权限（用于截图和移动鼠标）。
 #
-# 用法: ./scripts/screenshot/capture_readme_screenshot.sh [输出路径]
+# 用法: ./scripts/screenshot/capture_readme_screenshot.sh [--language en|zh-Hans|zh-Hant] [输出路径]
+# 不指定语言时使用 en，输出 docs/screenshot.png；指定其他语言时默认输出 docs/screenshot-<语言>.png。
 #
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
-OUTPUT="${1:-$PROJECT_DIR/docs/screenshot.png}"
+LANGUAGE="en"
+if [[ "${1:-}" == "--language" ]]; then
+    LANGUAGE="${2:?}"
+    shift 2
+fi
+if [[ "$LANGUAGE" == "en" ]]; then
+    DEFAULT_OUTPUT="$PROJECT_DIR/docs/screenshot.png"
+else
+    DEFAULT_OUTPUT="$PROJECT_DIR/docs/screenshot-$LANGUAGE.png"
+fi
+OUTPUT="${1:-$DEFAULT_OUTPUT}"
 DERIVED_DATA="$PROJECT_DIR/build/ScreenshotDerivedData"
 DEMO_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/simbox-demo.XXXXXX")"
 APP_BINARY="$DERIVED_DATA/Build/Products/Debug/SimBox.app/Contents/MacOS/SimBox"
@@ -33,7 +44,7 @@ swift "$SCRIPT_DIR/make_demo_devices.swift" "$DEMO_ROOT/Devices" >/dev/null
 pkill -x SimBox 2>/dev/null || true
 sleep 1
 
-SIMBOX_DEVICES_ROOT="$DEMO_ROOT/Devices" "$APP_BINARY" -SimBoxScreenshotMode YES >/dev/null 2>&1 &
+SIMBOX_DEVICES_ROOT="$DEMO_ROOT/Devices" "$APP_BINARY" -SimBoxScreenshotMode YES -AppleLanguages "($LANGUAGE)" >/dev/null 2>&1 &
 APP_PID=$!
 sleep 2.5
 

@@ -38,7 +38,7 @@ final class StatusMenuController: NSObject {
         image?.size = NSSize(width: 18, height: 18)
         button.image = image
         button.imagePosition = .imageOnly
-        button.toolTip = "SimBox — simulator inspector"
+        button.toolTip = L10n.statusItemToolTip
     }
 
     private func rebuildMenu() {
@@ -60,7 +60,7 @@ final class StatusMenuController: NSObject {
         }
 
         if shown.isEmpty {
-            let empty = NSMenuItem(title: AppConfig.MenuTitle.noSimulators, action: nil, keyEquivalent: "")
+            let empty = NSMenuItem(title: L10n.noSimulators, action: nil, keyEquivalent: "")
             empty.isEnabled = false
             menu.addItem(empty)
         }
@@ -83,9 +83,9 @@ final class StatusMenuController: NSObject {
     }
 
     private func overflowItem(for simulators: [Simulator]) -> NSMenuItem {
-        let item = NSMenuItem(title: AppConfig.MenuTitle.moreSimulators, action: nil, keyEquivalent: "")
+        let item = NSMenuItem(title: L10n.moreSimulators, action: nil, keyEquivalent: "")
         let service = service
-        item.submenu = LazyMenu(title: AppConfig.MenuTitle.moreSimulators) { submenu in
+        item.submenu = LazyMenu(title: L10n.moreSimulators) { submenu in
             for simulator in simulators {
                 let simulatorItem = NSMenuItem(title: simulator.displayTitle, action: nil, keyEquivalent: "")
                 simulatorItem.submenu = LazyMenu(title: simulator.displayTitle) { simulatorMenu in
@@ -93,7 +93,7 @@ final class StatusMenuController: NSObject {
                     let header = MenuBuilder.header(for: simulator)
                     simulatorMenu.addItem(header)
                     if content.isEmpty {
-                        let empty = NSMenuItem(title: AppConfig.MenuTitle.noSimulators, action: nil, keyEquivalent: "")
+                        let empty = NSMenuItem(title: L10n.noSimulators, action: nil, keyEquivalent: "")
                         empty.isEnabled = false
                         simulatorMenu.addItem(empty)
                     }
@@ -107,7 +107,7 @@ final class StatusMenuController: NSObject {
 
     private func appendServiceItems() {
         let loginItem = NSMenuItem(
-            title: AppConfig.MenuTitle.startAtLogin,
+            title: L10n.startAtLogin,
             action: #selector(toggleLoginAtLaunch),
             keyEquivalent: ""
         )
@@ -116,7 +116,7 @@ final class StatusMenuController: NSObject {
         menu.addItem(loginItem)
 
         let updateItem = NSMenuItem(
-            title: AppConfig.MenuTitle.checkForUpdates,
+            title: L10n.checkForUpdates,
             action: #selector(checkForUpdates),
             keyEquivalent: ""
         )
@@ -128,7 +128,7 @@ final class StatusMenuController: NSObject {
         let appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? "SimBox"
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
         let about = NSMenuItem(
-            title: "About \(appName) \(version)",
+            title: L10n.about(appName: appName, version: version),
             action: #selector(openHomepage),
             keyEquivalent: ""
         )
@@ -136,7 +136,7 @@ final class StatusMenuController: NSObject {
         menu.addItem(about)
 
         let quit = NSMenuItem(
-            title: AppConfig.MenuTitle.quit,
+            title: L10n.quit,
             action: #selector(quit),
             keyEquivalent: "q"
         )

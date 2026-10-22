@@ -27,7 +27,7 @@ struct Simulator {
         path = folder.hasSuffix("/") ? folder : folder + "/"
         let folderName = URL(fileURLWithPath: folder).lastPathComponent
         udid = properties["UDID"] as? String ?? folderName
-        name = properties["name"] as? String ?? "Unknown Simulator"
+        name = properties["name"] as? String ?? L10n.unknownSimulator
         runtime = Simulator.readableRuntime(from: properties["runtime"] as? String)
         state = State(rawValue: properties["state"] as? Int ?? -1) ?? .unknown
         isDeleted = properties["isDeleted"] as? Bool ?? false
@@ -43,7 +43,7 @@ struct Simulator {
     }
 
     var displayTitle: String {
-        let badge = state == .booted ? "  (Booted)" : ""
+        let badge = state == .booted ? "  (\(L10n.booted))" : ""
         return "\(name)  ·  \(runtime)\(badge)"
     }
 
@@ -82,7 +82,7 @@ struct Simulator {
     /// 把 `com.apple.CoreSimulator.SimRuntime.iOS-18-0` 转成 `iOS 18.0`。
     static func readableRuntime(from raw: String?) -> String {
         guard let raw, !raw.isEmpty else {
-            return "Unknown OS"
+            return L10n.unknownOS
         }
         let trimmed = raw.replacingOccurrences(of: "com.apple.CoreSimulator.SimRuntime.", with: "")
         // 第一个 `-` 之前是平台名，之后是以 `-` 分隔的版本号。

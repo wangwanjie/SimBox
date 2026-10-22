@@ -1,10 +1,21 @@
 # SimBox
 
-macOS 菜单栏工具：一键打开 iOS / iPadOS / watchOS / tvOS 模拟器里已安装 app 的沙盒目录、App Group 和 App Extension 容器。原项目：[dsmelov/simsim](https://github.com/dsmelov/simsim)，本 fork 面向 Xcode 27 / macOS 26+ 重写并改名为 SimBox。
+macOS 菜单栏工具：一键打开 iOS / iPadOS / watchOS / tvOS 模拟器里已安装 app 的沙盒目录、App Group 和 App Extension 容器。界面支持 English / 简体中文 / 繁體中文，跟随系统语言。
+
+SimBox 面向 Xcode 27 / macOS 26+ 完全重写，最初的想法来自 [dsmelov/simsim](https://github.com/dsmelov/simsim)。
 
 ![macOS 13+](https://img.shields.io/badge/macOS-13.0%2B-blue) ![Xcode 27](https://img.shields.io/badge/Xcode-27-blue) ![Swift 5.10](https://img.shields.io/badge/Swift-5.10-orange) ![Apple Silicon & Intel](https://img.shields.io/badge/arch-arm64%20%7C%20x86__64-lightgrey)
 
-![SimBox 主界面](docs/screenshot.png)
+![SimBox 主界面](docs/screenshot-zh-Hans.png)
+
+<details>
+<summary>English / 繁體中文界面</summary>
+
+![SimBox English](docs/screenshot.png)
+
+![SimBox 繁體中文](docs/screenshot-zh-Hant.png)
+
+</details>
 
 点击菜单栏里的 SimBox 图标，按模拟器分组列出你自己安装的 app（系统 app 自动隐藏），已启动的模拟器排在最前；每个 app 的子菜单提供各种打开方式和常用操作。
 
@@ -35,6 +46,7 @@ DMG 已经过 Apple 公证，打开后把 SimBox 拖进“应用程序”即可�
 - 模拟器标题的子菜单：在 Finder 中打开设备目录、复制 UDID
 - 开机自启（SMAppService），需要授权时自动跳转到“系统设置 › 登录项”
 - Sparkle 2 自动更新，Apple Silicon 与 Intel 分别推送各自的安装包
+- 多语言：English / 简体中文 / 繁體中文，跟随系统语言
 
 ## 快捷键（点击 app 条目本身时）
 
@@ -60,7 +72,11 @@ open SimBox.xcodeproj
 xcodebuild -project SimBox.xcodeproj -scheme SimBox -destination 'platform=macOS' test
 ```
 
-测试用临时目录模拟 `CoreSimulator/Devices` 结构，覆盖模拟器发现与排序、app 信息解析、图标文件匹配、容器重置、按架构选择更新 feed 等逻辑。
+测试用临时目录模拟 `CoreSimulator/Devices` 结构，覆盖模拟器发现与排序、app 信息解析、图标文件匹配、容器重置、按架构选择更新 feed、本地化完整性等逻辑。
+
+## 多语言
+
+文案集中在 [L10n.swift](SimBox/Sources/Support/L10n.swift)，key 为英文原文，翻译维护在 String Catalog [Localizable.xcstrings](SimBox/Resources/Localizable.xcstrings)（en / zh-Hans / zh-Hant）。新增文案时在 `L10n` 里加 `String(localized:)`，再到 catalog 补齐三种语言；`LocalizationTests` 会检查代码里用到的 key 是否都已翻译、占位符数量是否一致、是否有残留的废弃 key。
 
 Debug 构建支持通过环境变量 `SIMBOX_DEVICES_ROOT` 指向任意设备目录，方便调试。
 
@@ -79,7 +95,9 @@ swift scripts/generate_icons.swift
 README 截图由脚本用演示数据生成（需要终端有“屏幕录制”和“辅助功能”权限）：
 
 ```bash
-./scripts/screenshot/capture_readme_screenshot.sh
+./scripts/screenshot/capture_readme_screenshot.sh                      # docs/screenshot.png（English）
+./scripts/screenshot/capture_readme_screenshot.sh --language zh-Hans   # docs/screenshot-zh-Hans.png
+./scripts/screenshot/capture_readme_screenshot.sh --language zh-Hant   # docs/screenshot-zh-Hant.png
 ```
 
 ## 打包 & 发布
@@ -117,7 +135,7 @@ SPARKLE_BIN="$(find ~/Library/Developer/Xcode/DerivedData -path '*/SourcePackage
 
 ## 版本号
 
-在 `SimBox.xcodeproj/project.pbxproj` 里改 `MARKETING_VERSION` 与 `CURRENT_PROJECT_VERSION`（app 和测试 target 各两处）。当前 2.2.0（build 3）。
+在 `SimBox.xcodeproj/project.pbxproj` 里改 `MARKETING_VERSION` 与 `CURRENT_PROJECT_VERSION`（app 和测试 target 各两处）。当前 2.3.0（build 4）。
 
 ## License
 
