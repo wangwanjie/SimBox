@@ -2,7 +2,7 @@
 
 macOS 菜单栏工具：一键打开 iOS / iPadOS / watchOS / tvOS 模拟器里已安装 app 的沙盒目录、App Group 和 App Extension 容器。界面支持 English / 简体中文 / 繁體中文，跟随系统语言。
 
-SimBox 面向 Xcode 27 / macOS 26+ 完全重写，最初的想法来自 [dsmelov/simsim](https://github.com/dsmelov/simsim)。
+SimBox 面向 Xcode 27 / macOS 26+ 开发。
 
 ![macOS 13+](https://img.shields.io/badge/macOS-13.0%2B-blue) ![Xcode 27](https://img.shields.io/badge/Xcode-27-blue) ![Swift 5.10](https://img.shields.io/badge/Swift-5.10-orange) ![Apple Silicon & Intel](https://img.shields.io/badge/arch-arm64%20%7C%20x86__64-lightgrey)
 
