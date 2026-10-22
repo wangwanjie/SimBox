@@ -3,8 +3,23 @@
     <channel>
         <title>SimBox</title>
         <item>
+            <title>2.3.0</title>
+            <pubDate>Thu, 22 Oct 2026 10:07:23 +0800</pubDate>
+            <link>https://github.com/wangwanjie/SimBox/releases/tag/v2.3.0</link>
+            <sparkle:version>4</sparkle:version>
+            <sparkle:shortVersionString>2.3.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/wangwanjie/SimBox/releases/download/v2.3.0/SimBox_v2.3.0_x86_64.dmg" length="1240237" type="application/octet-stream" sparkle:edSignature="2GvLaGXi1iPd9sqaAIWQcjJBpznDrDjurd4KiXwo9qsdCUClFb+A0PcHfgHPicP0EiNQ5CD/XAbBjUE3WeoVCA==" />
+            <description>&lt;h2&gt;下载&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;Apple Silicon（M 系列芯片）：`SimBox_v2.3.0_arm64.dmg`&lt;/li&gt;&lt;li&gt;Intel：`SimBox_v2.3.0_x86_64.dmg`&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;新功能&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;多语言：界面支持 English / 简体中文 / 繁體中文，自动跟随系统语言&lt;/li&gt;&lt;li&gt;重置 App 数据的确认弹窗、错误提示等此前写死为中文的文案也已本地化&lt;/li&gt;&lt;/ul&gt;
+&lt;h2&gt;其他&lt;/h2&gt;
+&lt;ul&gt;&lt;li&gt;SimBox 现在是独立仓库，不再显示为 dsmelov/simsim 的 fork；历史版本与自动更新地址保持不变&lt;/li&gt;&lt;li&gt;新增本地化完整性测试，确保每条文案三种语言都已翻译&lt;/li&gt;&lt;/ul&gt;</description>
+        </item>
+        <item>
             <title>2.2.0</title>
-            <pubDate>Thu, 22 Oct 2026 09:44:37 +0800</pubDate>
+            <pubDate>Thu, 22 Oct 2026 10:07:23 +0800</pubDate>
             <link>https://github.com/wangwanjie/SimBox/releases/tag/v2.2.0</link>
             <sparkle:version>3</sparkle:version>
             <sparkle:shortVersionString>2.2.0</sparkle:shortVersionString>

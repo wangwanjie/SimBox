@@ -6,41 +6,35 @@
         <description>SimBox release feed (legacy universal builds).</description>
         <language>en</language>
         <item>
-            <title>2.2.0</title>
-            <pubDate>Thu, 22 Oct 2026 09:44:34 +0800</pubDate>
-            <link>https://github.com/wangwanjie/SimBox/releases/tag/v2.2.0</link>
-            <sparkle:version>3</sparkle:version>
-            <sparkle:shortVersionString>2.2.0</sparkle:shortVersionString>
+            <title>2.3.0</title>
+            <pubDate>Thu, 22 Oct 2026 10:07:21 +0800</pubDate>
+            <link>https://github.com/wangwanjie/SimBox/releases/tag/v2.3.0</link>
+            <sparkle:version>4</sparkle:version>
+            <sparkle:shortVersionString>2.3.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
             <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
-            <enclosure url="https://github.com/wangwanjie/SimBox/releases/download/v2.2.0/SimBox_v2.2.0_arm64.dmg" length="1170455" type="application/octet-stream" sparkle:edSignature="4h2U+xkMVUKn/3Zn1s0XuVxGTxcgbq9GyHUkP9XOhGoWuGfXHfbWVj2An5m6MNxnyJERjPGW6GIRp0rkbEwdCw==" />
+            <enclosure url="https://github.com/wangwanjie/SimBox/releases/download/v2.3.0/SimBox_v2.3.0_arm64.dmg" length="1174629" type="application/octet-stream" sparkle:edSignature="0ek0L8M0kSIog6B6TZfpTOs3rC2BUNZi9RXPrgzkLPLRLZ7ILs2uSXvEZ07eXLXEXF1ad4O/i3Eh2HUELRb5Cg==" />
             <description>&lt;h2&gt;下载&lt;/h2&gt;
-&lt;ul&gt;&lt;li&gt;Apple Silicon（M 系列芯片）：`SimBox_v2.2.0_arm64.dmg`&lt;/li&gt;&lt;li&gt;Intel：`SimBox_v2.2.0_x86_64.dmg`&lt;/li&gt;&lt;/ul&gt;
-&lt;p&gt;从本版本起按架构分别发布，安装包更小；已安装 2.1.0 的用户会通过自动更新收到与本机匹配的版本。&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;Apple Silicon（M 系列芯片）：`SimBox_v2.3.0_arm64.dmg`&lt;/li&gt;&lt;li&gt;Intel：`SimBox_v2.3.0_x86_64.dmg`&lt;/li&gt;&lt;/ul&gt;
 &lt;h2&gt;新功能&lt;/h2&gt;
-&lt;ul&gt;&lt;li&gt;app 子菜单新增：在 Finder 中定位 `.app` 安装包、打开 UserDefaults plist、复制 bundle identifier&lt;/li&gt;&lt;li&gt;模拟器标题新增子菜单：在 Finder 中打开设备目录、复制 UDID&lt;/li&gt;&lt;li&gt;超过 5 台的模拟器收进 “More Simulators” 子菜单，不再直接丢弃&lt;/li&gt;&lt;li&gt;App Group / App Extension 条目显示类型图标&lt;/li&gt;&lt;/ul&gt;
-&lt;h2&gt;修复&lt;/h2&gt;
-&lt;ul&gt;&lt;li&gt;macOS 27 上菜单里的 app 图标不显示&lt;/li&gt;&lt;li&gt;重置 app 数据会删掉 Documents / Library / tmp 目录本身，导致 app 之后无法写入；现在只清空内容并保留容器结构，失败时给出提示&lt;/li&gt;&lt;li&gt;已删除（isDeleted）的模拟器仍出现在列表中&lt;/li&gt;&lt;li&gt;只装了系统 app 的模拟器占用 “最近 5 台” 名额，导致有内容的模拟器被挤掉&lt;/li&gt;&lt;li&gt;app 名称显示 CFBundleName 而非桌面上的显示名称；版本号改为 `1.2.0 (45)` 形式&lt;/li&gt;&lt;li&gt;iPad 应用图标文件名匹配错误、优先使用最小尺寸图标&lt;/li&gt;&lt;li&gt;iTerm / Commander One / Realm Studio 安装在 ~/Applications 等位置时识别不到；Commander One 未安装却显示入口&lt;/li&gt;&lt;li&gt;开机自启需要用户授权时没有任何提示，现在会跳转到“系统设置 › 登录项”&lt;/li&gt;&lt;li&gt;每次展开菜单都会对每个 app 全量扫描安装目录，app 多时明显卡顿；子菜单改为展开时才构建，图标加缓存&lt;/li&gt;&lt;/ul&gt;
+&lt;ul&gt;&lt;li&gt;多语言：界面支持 English / 简体中文 / 繁體中文，自动跟随系统语言&lt;/li&gt;&lt;li&gt;重置 App 数据的确认弹窗、错误提示等此前写死为中文的文案也已本地化&lt;/li&gt;&lt;/ul&gt;
 &lt;h2&gt;其他&lt;/h2&gt;
-&lt;ul&gt;&lt;li&gt;新增单元测试（26 个用例）&lt;/li&gt;&lt;li&gt;发布脚本：按架构瘦身打包、按 Sparkle 推荐顺序签名、禁止生成不会上传的 delta&lt;/li&gt;&lt;/ul&gt;</description>
+&lt;ul&gt;&lt;li&gt;SimBox 现在是独立仓库，不再显示为 dsmelov/simsim 的 fork；历史版本与自动更新地址保持不变&lt;/li&gt;&lt;li&gt;新增本地化完整性测试，确保每条文案三种语言都已翻译&lt;/li&gt;&lt;/ul&gt;</description>
         </item>
         <item>
-            <title>2.2.0</title>
-            <pubDate>Thu, 22 Oct 2026 09:44:37 +0800</pubDate>
-            <link>https://github.com/wangwanjie/SimBox/releases/tag/v2.2.0</link>
-            <sparkle:version>3</sparkle:version>
-            <sparkle:shortVersionString>2.2.0</sparkle:shortVersionString>
+            <title>2.3.0</title>
+            <pubDate>Thu, 22 Oct 2026 10:07:23 +0800</pubDate>
+            <link>https://github.com/wangwanjie/SimBox/releases/tag/v2.3.0</link>
+            <sparkle:version>4</sparkle:version>
+            <sparkle:shortVersionString>2.3.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/wangwanjie/SimBox/releases/download/v2.2.0/SimBox_v2.2.0_x86_64.dmg" length="1234602" type="application/octet-stream" sparkle:edSignature="hJKYY7Yfov+oPXjhB3rKLBoWI+y0RquWaf23ommtX3X0P39rPWqYY4o2qqLKuBFii+OfBY9J05JeLGEq2D83Dw==" />
+            <enclosure url="https://github.com/wangwanjie/SimBox/releases/download/v2.3.0/SimBox_v2.3.0_x86_64.dmg" length="1240237" type="application/octet-stream" sparkle:edSignature="2GvLaGXi1iPd9sqaAIWQcjJBpznDrDjurd4KiXwo9qsdCUClFb+A0PcHfgHPicP0EiNQ5CD/XAbBjUE3WeoVCA==" />
             <description>&lt;h2&gt;下载&lt;/h2&gt;
-&lt;ul&gt;&lt;li&gt;Apple Silicon（M 系列芯片）：`SimBox_v2.2.0_arm64.dmg`&lt;/li&gt;&lt;li&gt;Intel：`SimBox_v2.2.0_x86_64.dmg`&lt;/li&gt;&lt;/ul&gt;
-&lt;p&gt;从本版本起按架构分别发布，安装包更小；已安装 2.1.0 的用户会通过自动更新收到与本机匹配的版本。&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;Apple Silicon（M 系列芯片）：`SimBox_v2.3.0_arm64.dmg`&lt;/li&gt;&lt;li&gt;Intel：`SimBox_v2.3.0_x86_64.dmg`&lt;/li&gt;&lt;/ul&gt;
 &lt;h2&gt;新功能&lt;/h2&gt;
-&lt;ul&gt;&lt;li&gt;app 子菜单新增：在 Finder 中定位 `.app` 安装包、打开 UserDefaults plist、复制 bundle identifier&lt;/li&gt;&lt;li&gt;模拟器标题新增子菜单：在 Finder 中打开设备目录、复制 UDID&lt;/li&gt;&lt;li&gt;超过 5 台的模拟器收进 “More Simulators” 子菜单，不再直接丢弃&lt;/li&gt;&lt;li&gt;App Group / App Extension 条目显示类型图标&lt;/li&gt;&lt;/ul&gt;
-&lt;h2&gt;修复&lt;/h2&gt;
-&lt;ul&gt;&lt;li&gt;macOS 27 上菜单里的 app 图标不显示&lt;/li&gt;&lt;li&gt;重置 app 数据会删掉 Documents / Library / tmp 目录本身，导致 app 之后无法写入；现在只清空内容并保留容器结构，失败时给出提示&lt;/li&gt;&lt;li&gt;已删除（isDeleted）的模拟器仍出现在列表中&lt;/li&gt;&lt;li&gt;只装了系统 app 的模拟器占用 “最近 5 台” 名额，导致有内容的模拟器被挤掉&lt;/li&gt;&lt;li&gt;app 名称显示 CFBundleName 而非桌面上的显示名称；版本号改为 `1.2.0 (45)` 形式&lt;/li&gt;&lt;li&gt;iPad 应用图标文件名匹配错误、优先使用最小尺寸图标&lt;/li&gt;&lt;li&gt;iTerm / Commander One / Realm Studio 安装在 ~/Applications 等位置时识别不到；Commander One 未安装却显示入口&lt;/li&gt;&lt;li&gt;开机自启需要用户授权时没有任何提示，现在会跳转到“系统设置 › 登录项”&lt;/li&gt;&lt;li&gt;每次展开菜单都会对每个 app 全量扫描安装目录，app 多时明显卡顿；子菜单改为展开时才构建，图标加缓存&lt;/li&gt;&lt;/ul&gt;
+&lt;ul&gt;&lt;li&gt;多语言：界面支持 English / 简体中文 / 繁體中文，自动跟随系统语言&lt;/li&gt;&lt;li&gt;重置 App 数据的确认弹窗、错误提示等此前写死为中文的文案也已本地化&lt;/li&gt;&lt;/ul&gt;
 &lt;h2&gt;其他&lt;/h2&gt;
-&lt;ul&gt;&lt;li&gt;新增单元测试（26 个用例）&lt;/li&gt;&lt;li&gt;发布脚本：按架构瘦身打包、按 Sparkle 推荐顺序签名、禁止生成不会上传的 delta&lt;/li&gt;&lt;/ul&gt;</description>
+&lt;ul&gt;&lt;li&gt;SimBox 现在是独立仓库，不再显示为 dsmelov/simsim 的 fork；历史版本与自动更新地址保持不变&lt;/li&gt;&lt;li&gt;新增本地化完整性测试，确保每条文案三种语言都已翻译&lt;/li&gt;&lt;/ul&gt;</description>
         </item>
     </channel>
 </rss>
