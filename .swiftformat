@@ -39,7 +39,6 @@
 --enable redundantVoidReturnType
 --enable strongOutlets
 --enable trailingCommas
---enable wrapMultilineStatementBraces
 --enable blankLinesBetweenScopes
 --disable wrapMultilineStatementBraces
 --disable redundantExtensionACL

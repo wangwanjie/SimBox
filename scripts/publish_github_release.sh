@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
-# 上传 SimBox DMG 到 GitHub Releases，并同步 appcast.xml。
-# 默认上传 build/dmg/ 下最新的 SimBox_*.dmg。
+# 上传 SimBox DMG 到 GitHub Releases，并同步 appcast。
+# 默认上传 build/dmg/ 下当前版本（MARKETING_VERSION）的全部架构 DMG：SimBox_v<版本>_<arch>.dmg。
 #
 
 set -euo pipefail
@@ -12,7 +12,7 @@ DEFAULT_DMG_DIR="$PROJECT_DIR/build/dmg"
 PBXPROJ="$PROJECT_DIR/SimBox.xcodeproj/project.pbxproj"
 INFO_PLIST="$PROJECT_DIR/SimBox/Info.plist"
 
-DMG_PATH=""
+DMG_PATHS=()
 REPO=""
 TAG=""
 TITLE=""
@@ -25,7 +25,7 @@ PRERELEASE=false
 usage() {
     cat <<'EOF'
 用法:
-  ./scripts/publish_github_release.sh [--dmg PATH] [--repo OWNER/REPO] [--tag TAG]
+  ./scripts/publish_github_release.sh [--dmg PATH]... [--repo OWNER/REPO] [--tag TAG]
                                      [--title TITLE] [--notes TEXT | --notes-file FILE | --generate-notes]
                                      [--draft] [--prerelease]
 
@@ -79,24 +79,12 @@ detect_repo() {
     return 1
 }
 
-find_latest_dmg() {
-    local latest="" mtime=0 fp
-    shopt -s nullglob
-    for fp in "$DEFAULT_DMG_DIR"/SimBox*.dmg; do
-        [[ -f "$fp" ]] || continue
-        local m; m="$(stat -f '%m' "$fp")"
-        if [[ -z "$latest" || "$m" -gt "$mtime" ]]; then latest="$fp"; mtime="$m"; fi
-    done
-    shopt -u nullglob
-    printf '%s\n' "$latest"
-}
-
+# 文件名形如 SimBox_v2.2.0_arm64.dmg，取出版本号。
 infer_version_from_dmg() {
-    local n raw
+    local n
     n="$(basename "$1")"
-    if [[ "$n" =~ ^SimBox_(.+)\.dmg$ ]]; then
-        raw="${BASH_REMATCH[1]}"
-        printf '%s\n' "${raw#v}"
+    if [[ "$n" =~ ^SimBox_v?([0-9][^_]*)_(arm64|x86_64)\.dmg$ ]]; then
+        printf '%s\n' "${BASH_REMATCH[1]}"
         return 0
     fi
     return 1
@@ -108,7 +96,7 @@ read_marketing_version() {
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --dmg) DMG_PATH="${2:?}"; shift 2 ;;
+        --dmg) DMG_PATHS+=("${2:?}"); shift 2 ;;
         --repo) REPO="${2:?}"; shift 2 ;;
         --tag) TAG="${2:?}"; shift 2 ;;
         --title) TITLE="${2:?}"; shift 2 ;;
@@ -136,12 +124,27 @@ if ! gh auth status >/dev/null 2>&1; then
     echo "错误: gh 未登录，请先运行 gh auth login" >&2; exit 1
 fi
 
-if [[ -n "$DMG_PATH" ]]; then
-    DMG_PATH="$(resolve_path "$DMG_PATH")"
+if [[ ${#DMG_PATHS[@]} -gt 0 ]]; then
+    for i in "${!DMG_PATHS[@]}"; do
+        DMG_PATHS[$i]="$(resolve_path "${DMG_PATHS[$i]}")"
+    done
 else
-    DMG_PATH="$(find_latest_dmg)"
+    CURRENT_VERSION="$(read_marketing_version)"
+    shopt -s nullglob
+    DMG_PATHS=( "$DEFAULT_DMG_DIR"/SimBox_v"$CURRENT_VERSION"_*.dmg )
+    shopt -u nullglob
 fi
-[[ -z "$DMG_PATH" || ! -f "$DMG_PATH" ]] && { echo "错误: 找不到 DMG。先跑 ./scripts/build_dmg.sh" >&2; exit 1; }
+if [[ ${#DMG_PATHS[@]} -eq 0 ]]; then
+    echo "错误: 找不到 DMG。先跑 ./scripts/build_dmg.sh" >&2; exit 1
+fi
+for dmg in "${DMG_PATHS[@]}"; do
+    if [[ -z "$dmg" || ! -f "$dmg" ]]; then
+        echo "错误: DMG 不存在: $dmg" >&2; exit 1
+    fi
+    if ! infer_version_from_dmg "$dmg" >/dev/null; then
+        echo "错误: DMG 文件名需形如 SimBox_v2.2.0_arm64.dmg: $(basename "$dmg")" >&2; exit 1
+    fi
+done
 
 if [[ -n "$NOTES_FILE" ]]; then
     NOTES_FILE="$(resolve_path "$NOTES_FILE")"
@@ -150,7 +153,12 @@ fi
 
 [[ -z "$REPO" ]] && { REPO="$(detect_repo)" || { echo "错误: 无法推断 GitHub 仓库" >&2; exit 1; }; }
 
-VERSION="$(infer_version_from_dmg "$DMG_PATH" 2>/dev/null || read_marketing_version)"
+VERSION="$(infer_version_from_dmg "${DMG_PATHS[0]}")"
+for dmg in "${DMG_PATHS[@]}"; do
+    if [[ "$(infer_version_from_dmg "$dmg")" != "$VERSION" ]]; then
+        echo "错误: 待上传的 DMG 版本不一致" >&2; exit 1
+    fi
+done
 [[ -z "$VERSION" ]] && { echo "错误: 无法推断版本号" >&2; exit 1; }
 
 [[ -z "$TAG" ]] && TAG="v$VERSION"
@@ -159,14 +167,14 @@ VERSION="$(infer_version_from_dmg "$DMG_PATH" 2>/dev/null || read_marketing_vers
 echo "仓库: $REPO"
 echo "Tag:  $TAG"
 echo "标题: $TITLE"
-echo "DMG:  $DMG_PATH"
+printf "DMG:  %s\n" "${DMG_PATHS[@]}"
 
 if gh release view "$TAG" -R "$REPO" >/dev/null 2>&1; then
     echo "Release 已存在，上传并覆盖同名资源..."
-    gh release upload "$TAG" "$DMG_PATH" -R "$REPO" --clobber
+    gh release upload "$TAG" "${DMG_PATHS[@]}" -R "$REPO" --clobber
 else
     echo "创建 Release..."
-    create_args=(release create "$TAG" "$DMG_PATH" -R "$REPO" --title "$TITLE")
+    create_args=(release create "$TAG" "${DMG_PATHS[@]}" -R "$REPO" --title "$TITLE")
     if [[ "$GENERATE_NOTES" == true ]]; then
         create_args+=(--generate-notes)
     elif [[ -n "$NOTES_FILE" ]]; then
@@ -183,9 +191,12 @@ echo "完成: https://github.com/$REPO/releases/tag/$TAG"
 
 APPCAST_NOTES="$(gh release view "$TAG" -R "$REPO" --json body --jq '.body // ""' 2>/dev/null || true)"
 
-APPCAST_ARGS=(--repo "$REPO" --archive "$DMG_PATH")
+APPCAST_ARGS=(--repo "$REPO")
+for dmg in "${DMG_PATHS[@]}"; do
+    APPCAST_ARGS+=(--archive "$dmg")
+done
 [[ -n "$APPCAST_NOTES" ]] && APPCAST_ARGS+=(--notes "$APPCAST_NOTES")
 
 "$PROJECT_DIR/scripts/generate_appcast.sh" "${APPCAST_ARGS[@]}"
 
-echo "appcast.xml 已更新，请提交并推送到默认分支。"
+echo "appcast.xml / appcast-arm64.xml / appcast-x86_64.xml 已更新，请提交并推送到默认分支。"

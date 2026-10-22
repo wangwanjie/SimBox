@@ -10,7 +10,18 @@
 		AA0000000000000000000B01 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = AA0000000000000000000C01 /* Sparkle */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		AA0000000000000000001E01 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA0000000000000000000301 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA0000000000000000000401;
+			remoteInfo = SimBox;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		AA0000000000000000001101 /* SimBoxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimBoxTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA0000000000000000000101 /* SimBox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimBox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -33,9 +44,21 @@
 			path = SimBox;
 			sourceTree = "<group>";
 		};
+		AA0000000000000000001801 /* SimBoxTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SimBoxTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AA0000000000000000001501 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AA0000000000000000000501 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -51,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				AA0000000000000000000801 /* SimBox */,
+				AA0000000000000000001801 /* SimBoxTests */,
 				AA0000000000000000000202 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -59,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				AA0000000000000000000101 /* SimBox.app */,
+				AA0000000000000000001101 /* SimBoxTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -66,6 +91,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AA0000000000000000001401 /* SimBoxTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA0000000000000000001701 /* Build configuration list for PBXNativeTarget "SimBoxTests" */;
+			buildPhases = (
+				AA0000000000000000001601 /* Sources */,
+				AA0000000000000000001501 /* Frameworks */,
+				AA0000000000000000001502 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AA0000000000000000001F01 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				AA0000000000000000001801 /* SimBoxTests */,
+			);
+			name = SimBoxTests;
+			productName = SimBoxTests;
+			productReference = AA0000000000000000001101 /* SimBoxTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		AA0000000000000000000401 /* SimBox */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AA0000000000000000000701 /* Build configuration list for PBXNativeTarget "SimBox" */;
@@ -103,6 +149,10 @@
 					AA0000000000000000000401 = {
 						CreatedOnToolsVersion = 27.0;
 					};
+					AA0000000000000000001401 = {
+						CreatedOnToolsVersion = 27.0;
+						TestTargetID = AA0000000000000000000401;
+					};
 				};
 			};
 			buildConfigurationList = AA0000000000000000000702 /* Build configuration list for PBXProject "SimBox" */;
@@ -123,11 +173,19 @@
 			projectRoot = "";
 			targets = (
 				AA0000000000000000000401 /* SimBox */,
+				AA0000000000000000001401 /* SimBoxTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		AA0000000000000000001502 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AA0000000000000000000502 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -138,6 +196,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AA0000000000000000001601 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AA0000000000000000000601 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -147,7 +212,53 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		AA0000000000000000001F01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA0000000000000000000401 /* SimBox */;
+			targetProxy = AA0000000000000000001E01 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		AA0000000000000000001901 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = X6B6C6U6QV;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 2.2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.vanjay.SimBoxTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimBox.app/Contents/MacOS/SimBox";
+			};
+			name = Debug;
+		};
+		AA0000000000000000001902 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = X6B6C6U6QV;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 2.2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.vanjay.SimBoxTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimBox.app/Contents/MacOS/SimBox";
+			};
+			name = Release;
+		};
 		AA0000000000000000000A01 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -274,7 +385,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = X6B6C6U6QV;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -286,7 +397,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.vanjay.SimBox;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -303,7 +414,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = X6B6C6U6QV;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -315,7 +426,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = cn.vanjay.SimBox;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -326,6 +437,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AA0000000000000000001701 /* Build configuration list for PBXNativeTarget "SimBoxTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000000000000000001901 /* Debug */,
+				AA0000000000000000001902 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		AA0000000000000000000701 /* Build configuration list for PBXNativeTarget "SimBox" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -111,7 +111,7 @@ func drawAppIcon(size: CGFloat) -> NSImage {
     let originY = size * 0.44 - projHeight / 2
 
     func iso(_ x: CGFloat, _ y: CGFloat, _ z: CGFloat) -> CGPoint {
-        return CGPoint(
+        CGPoint(
             x: originX + (x - z) * cos30,
             y: originY + y + (x + z) * 0.5
         )
@@ -150,18 +150,33 @@ func drawAppIcon(size: CGFloat) -> NSImage {
 
     // Front-right face (facing camera on the right).
     ctx.beginPath()
-    ctx.move(to: fp0); ctx.addLine(to: fp1); ctx.addLine(to: fp2); ctx.addLine(to: fp3); ctx.closePath()
-    ctx.setFillColor(cFront); ctx.fillPath()
+    ctx.move(to: fp0)
+    ctx.addLine(to: fp1)
+    ctx.addLine(to: fp2)
+    ctx.addLine(to: fp3)
+    ctx.closePath()
+    ctx.setFillColor(cFront)
+    ctx.fillPath()
 
     // Front-left face (facing camera on the left) — darker for depth.
     ctx.beginPath()
-    ctx.move(to: fp0); ctx.addLine(to: bp3); ctx.addLine(to: rp3); ctx.addLine(to: fp3); ctx.closePath()
-    ctx.setFillColor(cSide); ctx.fillPath()
+    ctx.move(to: fp0)
+    ctx.addLine(to: bp3)
+    ctx.addLine(to: rp3)
+    ctx.addLine(to: fp3)
+    ctx.closePath()
+    ctx.setFillColor(cSide)
+    ctx.fillPath()
 
     // Top rim.
     ctx.beginPath()
-    ctx.move(to: fp3); ctx.addLine(to: fp2); ctx.addLine(to: sp2); ctx.addLine(to: rp3); ctx.closePath()
-    ctx.setFillColor(cRim); ctx.fillPath()
+    ctx.move(to: fp3)
+    ctx.addLine(to: fp2)
+    ctx.addLine(to: sp2)
+    ctx.addLine(to: rp3)
+    ctx.closePath()
+    ctx.setFillColor(cRim)
+    ctx.fillPath()
 
     // Interior opening — inset rhombus, dark.
     let wallT = boxScale * 0.09
@@ -170,8 +185,13 @@ func drawAppIcon(size: CGFloat) -> NSImage {
     let ip2 = iso(bx - wallT, by, bz - wallT)
     let ip3 = iso(wallT, by, bz - wallT)
     ctx.beginPath()
-    ctx.move(to: ip0); ctx.addLine(to: ip1); ctx.addLine(to: ip2); ctx.addLine(to: ip3); ctx.closePath()
-    ctx.setFillColor(cInside); ctx.fillPath()
+    ctx.move(to: ip0)
+    ctx.addLine(to: ip1)
+    ctx.addLine(to: ip2)
+    ctx.addLine(to: ip3)
+    ctx.closePath()
+    ctx.setFillColor(cInside)
+    ctx.fillPath()
 
     // Phone rising from the opening (billboard, facing viewer).
     let openingCenter = iso(bx / 2, by, bz / 2)
@@ -219,7 +239,8 @@ func drawAppIcon(size: CGFloat) -> NSImage {
 
     // Screen gradient wallpaper.
     ctx.saveGState()
-    ctx.addPath(screenPath); ctx.clip()
+    ctx.addPath(screenPath)
+    ctx.clip()
     let screenGrad = CGGradient(
         colorsSpace: CGColorSpace(name: CGColorSpace.sRGB),
         colors: [

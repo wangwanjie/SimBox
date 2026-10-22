@@ -3,6 +3,7 @@ import AppKit
 @MainActor
 final class StatusMenuController: NSObject {
     private let statusItem: NSStatusItem
+    private let service: SimulatorService
     private lazy var menu: NSMenu = {
         let menu = NSMenu()
         menu.autoenablesItems = false
@@ -10,12 +11,20 @@ final class StatusMenuController: NSObject {
         return menu
     }()
 
-    init(statusItem: NSStatusItem) {
+    init(statusItem: NSStatusItem, service: SimulatorService = .shared) {
         self.statusItem = statusItem
+        self.service = service
         super.init()
         statusItem.menu = menu
         configureStatusButton()
     }
+
+    #if DEBUG
+        /// 仅用于生成 README 截图：在指定窗口内弹出与菜单栏完全相同的菜单。
+        func popUpMenu(in view: NSView, at point: NSPoint) {
+            menu.popUp(positioning: nil, at: point, in: view)
+        }
+    #endif
 
     private func configureStatusButton() {
         guard let button = statusItem.button else {
@@ -35,53 +44,65 @@ final class StatusMenuController: NSObject {
     private func rebuildMenu() {
         menu.removeAllItems()
 
-        let simulators = SimulatorService.activeSimulators()
-        if simulators.isEmpty {
-            let empty = NSMenuItem(title: "No active simulators", action: nil, keyEquivalent: "")
+        // 先按排序挑出前 N 台确实有用户内容的模拟器直接展开；只装了系统 app 的会被跳过，
+        // 不再占用名额。剩余模拟器收进 “More Simulators”，展开时才扫描。
+        var shown: [SimulatorContent] = []
+        var overflow: [Simulator] = []
+        for simulator in service.activeSimulators() {
+            if shown.count >= AppConfig.maxRecentSimulators {
+                overflow.append(simulator)
+                continue
+            }
+            let content = service.content(of: simulator)
+            if !content.isEmpty {
+                shown.append(content)
+            }
+        }
+
+        if shown.isEmpty {
+            let empty = NSMenuItem(title: AppConfig.MenuTitle.noSimulators, action: nil, keyEquivalent: "")
             empty.isEnabled = false
             menu.addItem(empty)
-        } else {
-            appendSimulators(Array(simulators.prefix(AppConfig.maxRecentSimulators)))
+        }
+
+        for (index, content) in shown.enumerated() {
+            if index > 0 {
+                menu.addItem(.separator())
+            }
+            menu.addItem(MenuBuilder.header(for: content.simulator))
+            MenuBuilder.items(for: content).forEach { menu.addItem($0) }
+        }
+
+        if !overflow.isEmpty {
+            menu.addItem(.separator())
+            menu.addItem(overflowItem(for: overflow))
         }
 
         menu.addItem(.separator())
         appendServiceItems()
     }
 
-    private func appendSimulators(_ simulators: [Simulator]) {
-        var isFirst = true
-        for simulator in simulators {
-            let apps = SimulatorService.installedApplications(on: simulator)
-            let groups = SimulatorService.appGroups(on: simulator)
-            let extensions = SimulatorService.appExtensions(on: simulator)
-            guard !apps.isEmpty || !groups.isEmpty || !extensions.isEmpty else { continue }
-
-            if !isFirst {
-                menu.addItem(.separator())
-            }
-            isFirst = false
-
-            let header = NSMenuItem(title: simulator.displayTitle, action: nil, keyEquivalent: "")
-            header.attributedTitle = NSAttributedString(
-                string: simulator.displayTitle,
-                attributes: [
-                    .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize, weight: .semibold),
-                    .foregroundColor: NSColor.secondaryLabelColor
-                ]
-            )
-            header.isEnabled = false
-            menu.addItem(header)
-
-            for app in apps {
-                menu.addItem(MenuBuilder.item(for: app))
-            }
-            for group in groups {
-                menu.addItem(MenuBuilder.item(for: group))
-            }
-            for extensionApp in extensions {
-                menu.addItem(MenuBuilder.item(for: extensionApp))
+    private func overflowItem(for simulators: [Simulator]) -> NSMenuItem {
+        let item = NSMenuItem(title: AppConfig.MenuTitle.moreSimulators, action: nil, keyEquivalent: "")
+        let service = service
+        item.submenu = LazyMenu(title: AppConfig.MenuTitle.moreSimulators) { submenu in
+            for simulator in simulators {
+                let simulatorItem = NSMenuItem(title: simulator.displayTitle, action: nil, keyEquivalent: "")
+                simulatorItem.submenu = LazyMenu(title: simulator.displayTitle) { simulatorMenu in
+                    let content = service.content(of: simulator)
+                    let header = MenuBuilder.header(for: simulator)
+                    simulatorMenu.addItem(header)
+                    if content.isEmpty {
+                        let empty = NSMenuItem(title: AppConfig.MenuTitle.noSimulators, action: nil, keyEquivalent: "")
+                        empty.isEnabled = false
+                        simulatorMenu.addItem(empty)
+                    }
+                    MenuBuilder.items(for: content).forEach { simulatorMenu.addItem($0) }
+                }
+                submenu.addItem(simulatorItem)
             }
         }
+        return item
     }
 
     private func appendServiceItems() {
@@ -104,8 +125,8 @@ final class StatusMenuController: NSObject {
 
         menu.addItem(.separator())
 
-        let appName = ProcessInfo.processInfo.processName
-        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        let appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? "SimBox"
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
         let about = NSMenuItem(
             title: "About \(appName) \(version)",
             action: #selector(openHomepage),
@@ -125,11 +146,11 @@ final class StatusMenuController: NSObject {
 
     @objc private func toggleLoginAtLaunch(_ sender: NSMenuItem) {
         do {
-            try LoginItemManager.toggle()
-            sender.state = LoginItemManager.isEnabled ? .on : .off
+            _ = try LoginItemManager.toggle()
         } catch {
-            NSSound.beep()
+            MenuActions.showLoginItemError(error)
         }
+        sender.state = LoginItemManager.isEnabled ? .on : .off
     }
 
     @objc private func checkForUpdates() {
@@ -146,7 +167,7 @@ final class StatusMenuController: NSObject {
 }
 
 extension StatusMenuController: NSMenuDelegate {
-    func menuNeedsUpdate(_ menu: NSMenu) {
+    func menuNeedsUpdate(_: NSMenu) {
         rebuildMenu()
     }
 }
