@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SimBox — 一键打开模拟器 App 沙盒的菜单栏工具</title>
+<meta name="description" content="SimBox 是 macOS 菜单栏工具，一键打开 iOS / iPadOS / watchOS / tvOS 模拟器里已安装 App 的沙盒目录、App Group 和 App Extension 容器。">
+<meta property="og:title" content="SimBox — 一键打开模拟器 App 沙盒的菜单栏工具">
+<meta property="og:description" content="按模拟器分组列出你安装的 App，一键在 Finder、终端中打开沙盒目录。支持 Apple 芯片与 Intel，macOS 13 及以上。">
+<meta property="og:image" content="https://wangwanjie.github.io/SimBox/assets/icon.png">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" type="image/png" href="assets/icon-256.png">
+<style>
+  :root {
+    --bg: #0c0b1d;
+    --nav-bg: rgba(12, 11, 29, 0.62);
+    --card: rgba(255, 255, 255, 0.045);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --text: #f1f0fb;
+    --muted: #a3a0c2;
+    --accent: #6a5cff;
+    --accent-2: #9b4dff;
+    --warm: #f3d79c;
+    --glow-1: rgba(106, 92, 255, 0.30);
+    --glow-2: rgba(155, 77, 255, 0.14);
+    --shot-shadow: 0 40px 120px rgba(0, 0, 0, .6), 0 0 0 1px rgba(255, 255, 255, .06);
+    --code-bg: rgba(255, 255, 255, .08);
+    --step-bg: rgba(106, 92, 255, .22);
+    --step-text: #d3cdff;
+    --radius: 18px;
+    --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+  /* 亮色外观跟随系统 */
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f6f5fd;
+      --nav-bg: rgba(246, 245, 253, 0.72);
+      --card: rgba(255, 255, 255, 0.78);
+      --card-border: rgba(40, 30, 110, 0.10);
+      --text: #1b1838;
+      --muted: #5f5b80;
+      --glow-1: rgba(106, 92, 255, 0.20);
+      --glow-2: rgba(243, 215, 156, 0.35);
+      --shot-shadow: 0 30px 80px rgba(40, 30, 110, .22), 0 0 0 1px rgba(40, 30, 110, .08);
+      --code-bg: rgba(40, 30, 110, .07);
+      --step-bg: rgba(106, 92, 255, .14);
+      --step-text: #4b3fd6;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--sans);
+    color: var(--text);
+    background:
+      radial-gradient(1200px 600px at 50% -10%, var(--glow-1), transparent 60%),
+      radial-gradient(800px 500px at 90% 30%, var(--glow-2), transparent 60%),
+      var(--bg);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    backdrop-filter: saturate(180%) blur(18px);
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
+    background: var(--nav-bg);
+    border-bottom: 1px solid var(--card-border);
+  }
+  nav .wrap { display: flex; align-items: center; height: 56px; gap: 28px; }
+  nav .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; text-decoration: none; }
+  nav .brand img { width: 26px; height: 26px; }
+  nav .links { margin-left: auto; display: flex; gap: 22px; font-size: 14px; }
+  nav .links a { color: var(--muted); text-decoration: none; }
+  nav .links a:hover { color: var(--text); }
+  nav .lang { cursor: pointer; border: 1px solid var(--card-border); border-radius: 999px; padding: 3px 12px; background: none; color: var(--muted); font: inherit; font-size: 13px; }
+
+  header.hero { text-align: center; padding: 88px 0 40px; }
+  .hero img.icon { width: 148px; height: 148px; filter: drop-shadow(0 24px 48px rgba(106, 92, 255, 0.45)); }
+  .hero h1 { font-size: clamp(40px, 7vw, 68px); letter-spacing: -0.03em; margin: 18px 0 8px; line-height: 1.05; }
+  .hero h1 span {
+    background: linear-gradient(120deg, var(--warm), var(--accent) 50%, var(--accent-2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero p.lead { font-size: clamp(17px, 2.2vw, 21px); color: var(--muted); max-width: 720px; margin: 0 auto; }
+  .downloads { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin: 36px 0 14px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px; text-align: left;
+    padding: 13px 22px; border-radius: 14px; text-decoration: none; font-weight: 600; font-size: 16px;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn small { display: block; font-weight: 400; font-size: 12px; opacity: .75; }
+  .btn.primary { color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: 0 10px 30px rgba(106, 92, 255, .35); }
+  .btn.secondary { background: var(--card); border: 1px solid var(--card-border); }
+  .btn:hover { transform: translateY(-2px); }
+  .btn svg { width: 22px; height: 22px; flex: none; }
+  .meta { color: var(--muted); font-size: 13px; }
+
+  .shot { margin: 56px auto 0; max-width: 860px; }
+  .shot img { width: 100%; display: block; border-radius: 14px; box-shadow: var(--shot-shadow); }
+  .tabs { display: flex; justify-content: center; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+  .tabs button {
+    font: inherit; font-size: 13px; color: var(--muted); background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 999px; padding: 6px 14px; cursor: pointer;
+  }
+  .tabs button.active { color: var(--text); border-color: rgba(106, 92, 255, .7); background: rgba(106, 92, 255, .18); }
+
+  section { padding: 96px 0 0; }
+  section h2 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.02em; margin: 0 0 8px; text-align: center; }
+  section p.sub { text-align: center; color: var(--muted); margin: 0 auto 44px; max-width: 640px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius);
+    padding: 20px; transition: border-color .15s ease, transform .15s ease;
+  }
+  .card:hover { border-color: rgba(106, 92, 255, .45); transform: translateY(-2px); }
+  .card .tile {
+    width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center;
+    font-size: 19px; color: #fff; margin-bottom: 12px;
+  }
+  .card h3 { margin: 0 0 4px; font-size: 17px; }
+  .card p { margin: 0; color: var(--muted); font-size: 14px; }
+
+  .points { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .point { padding: 24px; border-radius: var(--radius); background: var(--card); border: 1px solid var(--card-border); }
+  .point b { display: block; font-size: 18px; margin-bottom: 6px; }
+  .point span { color: var(--muted); font-size: 14px; }
+
+  table.keys { margin: 0 auto; border-collapse: separate; border-spacing: 0; min-width: min(480px, 100%); background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; overflow: hidden; }
+  table.keys th, table.keys td { padding: 12px 20px; text-align: left; border-bottom: 1px solid var(--card-border); }
+  table.keys tr:last-child td { border-bottom: none; }
+  table.keys th { color: var(--muted); font-weight: 600; font-size: 13px; }
+  kbd { font-family: var(--sans); background: var(--code-bg); border-radius: 6px; padding: 1px 8px; }
+
+  .install ol { counter-reset: step; list-style: none; padding: 0; margin: 0 auto; max-width: 720px; }
+  .install li { counter-increment: step; position: relative; padding: 18px 20px 18px 64px; margin-bottom: 10px; background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; }
+  .install li::before {
+    content: counter(step); position: absolute; left: 18px; top: 16px; width: 30px; height: 30px; border-radius: 50%;
+    display: grid; place-items: center; font-weight: 700; background: var(--step-bg); color: var(--step-text);
+  }
+  .install li code { background: var(--code-bg); border-radius: 6px; padding: 1px 6px; font-size: 13px; }
+
+  footer { margin-top: 110px; padding: 36px 0 48px; border-top: 1px solid var(--card-border); color: var(--muted); font-size: 13px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; }
+  footer a { color: var(--muted); }
+
+  [data-lang="en"] .zh, [data-lang="zh"] .en { display: none !important; }
+
+  @media (max-width: 640px) {
+    nav .links a.hide-sm { display: none; }
+    header.hero { padding-top: 56px; }
+  }
+</style>
+</head>
+<body data-lang="zh">
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#"><img src="assets/icon-256.png" alt="">SimBox</a>
+    <div class="links">
+      <a class="hide-sm" href="#features"><span class="zh">功能</span><span class="en">Features</span></a>
+      <a class="hide-sm" href="#install"><span class="zh">安装</span><span class="en">Install</span></a>
+      <a href="https://github.com/wangwanjie/SimBox/releases"><span class="zh">版本历史</span><span class="en">Releases</span></a>
+      <a href="https://github.com/wangwanjie/SimBox">GitHub</a>
+    </div>
+    <button class="lang" id="lang-toggle" type="button">EN</button>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <img class="icon" src="assets/icon.png" alt="SimBox">
+    <h1><span>SimBox</span></h1>
+    <p class="lead">
+      <span class="zh">一键打开 iOS / iPadOS / watchOS / tvOS 模拟器里已安装 App 的沙盒目录、App Group 和 App Extension 容器。常驻菜单栏，按模拟器分组，随用随开。</span>
+      <span class="en">Open the sandbox, App Group and App Extension containers of apps installed in your iOS / iPadOS / watchOS / tvOS simulators in one click — right from the menu bar.</span>
+    </p>
+    <div class="downloads">
+      <a class="btn primary" id="dl-arm" href="https://github.com/wangwanjie/SimBox/releases/latest">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M5 21h14"/></svg>
+        <span><span class="zh">下载 Apple 芯片版</span><span class="en">Download for Apple silicon</span><small>arm64 · M1 / M2 / M3 / M4 …</small></span>
+      </a>
+      <a class="btn secondary" id="dl-intel" href="https://github.com/wangwanjie/SimBox/releases/latest">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M5 21h14"/></svg>
+        <span><span class="zh">下载 Intel 版</span><span class="en">Download for Intel</span><small>x86_64</small></span>
+      </a>
+    </div>
+    <div class="meta">
+      <span class="zh">免费 · macOS 13.0 及以上 · 已通过 Apple 公证 · 内置自动更新</span>
+      <span class="en">Free · macOS 13.0 or later · Notarized by Apple · Built-in auto update</span>
+      <span id="version"></span>
+    </div>
+
+    <div class="shot">
+      <img id="shot" src="assets/screenshots/zh-Hans.png" alt="SimBox">
+    </div>
+    <div class="tabs" id="tabs">
+      <button type="button" class="active" data-shot="zh-Hans">简体中文</button>
+      <button type="button" data-shot="zh-Hant">繁體中文</button>
+      <button type="button" data-shot="en">English</button>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="points">
+      <div class="point"><b><span class="zh">只显示你的 App</span><span class="en">Only your apps</span></b><span class="zh">系统 App 自动隐藏，已启动的模拟器排在最前，其余按最近使用时间排序。</span><span class="en">System apps are hidden. Booted simulators come first, the rest are sorted by last use.</span></div>
+      <div class="point"><b><span class="zh">一键直达</span><span class="en">One click away</span></b><span class="zh">用 Finder、终端、iTerm 或 Commander One 打开沙盒目录，⌘1…⌘9 快捷键。</span><span class="en">Open sandboxes in Finder, Terminal, iTerm or Commander One with ⌘1…⌘9.</span></div>
+      <div class="point"><b><span class="zh">原生且轻量</span><span class="en">Native &amp; light</span></b><span class="zh">纯 AppKit 菜单栏应用，没有主窗口，不占程序坞。</span><span class="en">A pure AppKit menu bar app with no main window and no Dock icon.</span></div>
+      <div class="point"><b><span class="zh">三种语言</span><span class="en">Three languages</span></b><span class="zh">English、简体中文、繁體中文，跟随系统语言。</span><span class="en">English, Simplified Chinese and Traditional Chinese, following your system language.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <h2><span class="zh">功能</span><span class="en">Features</span></h2>
+    <p class="sub"><span class="zh">每个 App 和容器的子菜单都提供常用的打开方式和开发调试操作。</span><span class="en">Every app and container has a submenu with the actions you need while developing and debugging.</span></p>
+    <div class="grid" id="feature-grid"></div>
+  </div>
+</section>
+
+<section id="shortcuts">
+  <div class="wrap">
+    <h2><span class="zh">快捷键</span><span class="en">Shortcuts</span></h2>
+    <p class="sub"><span class="zh">点击 App 条目本身时，按住不同修饰键打开到不同位置。</span><span class="en">Hold a modifier key while clicking an app to choose where it opens.</span></p>
+    <table class="keys">
+      <tr><th><span class="zh">修饰键</span><span class="en">Modifier</span></th><th><span class="zh">打开位置</span><span class="en">Opens in</span></th></tr>
+      <tr><td><span class="zh">无</span><span class="en">None</span></td><td>Finder</td></tr>
+      <tr><td><kbd>⌥ Option</kbd></td><td>Terminal</td></tr>
+      <tr><td><kbd>⌃ Control</kbd></td><td>Commander One <span class="zh">（若已安装）</span><span class="en">(if installed)</span></td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="install" class="install">
+  <div class="wrap">
+    <h2><span class="zh">安装</span><span class="en">Install</span></h2>
+    <p class="sub"><span class="zh">不确定芯片类型？打开「苹果菜单 › 关于本机」，“芯片”一栏写着 Apple M… 的选 Apple 芯片版，写着 Intel 的选 Intel 版。</span><span class="en">Not sure which chip you have? Open  › About This Mac: “Apple M…” means Apple silicon, “Intel” means Intel.</span></p>
+    <ol>
+      <li><span class="zh">下载与本机芯片匹配的 DMG（<code>SimBox_v&lt;版本&gt;_arm64.dmg</code> 或 <code>SimBox_v&lt;版本&gt;_x86_64.dmg</code>）。</span><span class="en">Download the DMG for your chip (<code>SimBox_v&lt;version&gt;_arm64.dmg</code> or <code>SimBox_v&lt;version&gt;_x86_64.dmg</code>).</span></li>
+      <li><span class="zh">打开 DMG，把 SimBox 拖进「应用程序」文件夹。</span><span class="en">Open the DMG and drag SimBox into Applications.</span></li>
+      <li><span class="zh">从「应用程序」中打开 SimBox，它会出现在菜单栏；可在菜单中开启「登录时启动」。</span><span class="en">Launch SimBox from Applications. It appears in the menu bar; turn on “Launch at Login” from its menu if you like.</span></li>
+      <li><span class="zh">之后的新版本会通过内置的自动更新推送，也可以在菜单中点「检查更新…」。</span><span class="en">New versions arrive through the built-in updater, or choose “Check for Updates…” from the menu.</span></li>
+    </ol>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 VanJay · SimBox</span>
+    <span>
+      <a href="https://github.com/wangwanjie/SimBox/releases"><span class="zh">版本历史</span><span class="en">Releases</span></a> ·
+      <a href="https://github.com/wangwanjie/SimBox/issues"><span class="zh">反馈问题</span><span class="en">Feedback</span></a>
+    </span>
+  </div>
+</footer>
+
+<script>
+  // 功能卡片：[图标, 颜色, 中文名, 英文名, 中文说明, 英文说明]
+  const features = [
+    ["▤", "#6a5cff", "按模拟器分组", "Grouped by simulator", "列出每台模拟器里你安装的 App、App Group 与 App Extension，显示图标、名称和版本号。", "Lists your apps, App Groups and App Extensions per simulator, with icon, name and version."],
+    ["⌂", "#3b82f6", "打开沙盒目录", "Open sandboxes", "用 Finder、终端、iTerm 或 Commander One 打开沙盒，⌘1…⌘9 快捷键。", "Open the sandbox in Finder, Terminal, iTerm or Commander One with ⌘1…⌘9."],
+    ["⌕", "#0ea5e9", "定位安装包", "Reveal the .app", "在 Finder 中定位 App 的 .app 安装包。", "Reveal the app bundle in Finder."],
+    ["⚙", "#14b8a6", "UserDefaults", "UserDefaults", "直接打开 App 的 UserDefaults 对应的 plist 文件。", "Open the plist that backs the app’s UserDefaults."],
+    ["⧉", "#f59e0b", "复制路径与 ID", "Copy path & ID", "复制沙盒路径、Bundle Identifier；模拟器标题可复制 UDID。", "Copy the sandbox path or bundle identifier, and a simulator’s UDID."],
+    ["↺", "#ef4444", "重置 App 数据", "Reset app data", "清空 Documents / Library / tmp，保留容器结构，App 下次启动即可正常读写。", "Empty Documents / Library / tmp while keeping the container intact for the next launch."],
+    ["◈", "#c026d3", "Realm Studio", "Realm Studio", "检测到 .realm 文件时提供 Realm Studio 快捷入口。", "Shortcut to Realm Studio whenever a .realm file is found."],
+    ["▣", "#64748b", "设备目录", "Device folder", "在 Finder 中打开模拟器的设备目录；超过 5 台的模拟器收进子菜单。", "Open a simulator’s device folder; more than five simulators fold into a submenu."],
+    ["⏻", "#16a34a", "登录时启动", "Launch at login", "开机自启，需要授权时自动跳转到「系统设置 › 登录项」。", "Starts at login and takes you to System Settings › Login Items when approval is needed."],
+    ["⇣", "#9b4dff", "自动更新", "Auto update", "内置 Sparkle 自动更新，Apple 芯片与 Intel 分别推送各自的安装包。", "Built-in Sparkle updates deliver the right build for Apple silicon or Intel."]
+  ];
+
+  const grid = document.getElementById("feature-grid");
+  for (const [glyph, color, zh, en, zhText, enText] of features) {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML =
+      `<div class="tile" style="background:${color}">${glyph}</div>` +
+      `<h3><span class="zh">${zh}</span><span class="en">${en}</span></h3>` +
+      `<p><span class="zh">${zhText}</span><span class="en">${enText}</span></p>`;
+    grid.appendChild(card);
+  }
+
+  // 截图切换（三种界面语言）
+  const shot = document.getElementById("shot");
+  function showShot(name) {
+    document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("active", b.dataset.shot === name));
+    shot.src = `assets/screenshots/${name}.png`;
+  }
+  document.getElementById("tabs").addEventListener("click", (event) => {
+    const button = event.target.closest("button");
+    if (!button) {
+      return;
+    }
+    showShot(button.dataset.shot);
+  });
+
+  // 语言：默认跟随浏览器，记住用户的选择；截图同步切到对应语言
+  const toggle = document.getElementById("lang-toggle");
+  function applyLanguage(lang) {
+    document.body.dataset.lang = lang;
+    document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+    toggle.textContent = lang === "zh" ? "EN" : "中文";
+    localStorage.setItem("simbox.lang", lang);
+    if (lang === "en") {
+      showShot("en");
+    } else if (/^zh-(tw|hk|mo|hant)/i.test(navigator.language)) {
+      showShot("zh-Hant");
+    } else {
+      showShot("zh-Hans");
+    }
+  }
+  const saved = localStorage.getItem("simbox.lang");
+  applyLanguage(saved || (navigator.language.toLowerCase().startsWith("zh") ? "zh" : "en"));
+  toggle.addEventListener("click", () => applyLanguage(document.body.dataset.lang === "zh" ? "en" : "zh"));
+
+  // 尽量识别 Intel Mac（浏览器无法可靠区分时保持 Apple 芯片优先）
+  try {
+    const canvas = document.createElement("canvas");
+    const gl = canvas.getContext("webgl");
+    const info = gl && gl.getExtension("WEBGL_debug_renderer_info");
+    const renderer = info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : "";
+    if (/Intel|AMD|Radeon/i.test(renderer) && !/Apple/i.test(renderer)) {
+      document.getElementById("dl-intel").className = "btn primary";
+      document.getElementById("dl-arm").className = "btn secondary";
+      document.querySelector(".downloads").prepend(document.getElementById("dl-intel"));
+    }
+  } catch (error) {}
+
+  // 读取最新 Release：显示版本号，并把下载按钮直接指向对应架构的 DMG；失败时保留 Release 页链接
+  fetch("https://api.github.com/repos/wangwanjie/SimBox/releases/latest")
+    .then((response) => (response.ok ? response.json() : null))
+    .then((release) => {
+      if (!release) {
+        return;
+      }
+      if (release.tag_name) {
+        document.getElementById("version").textContent = ` · ${release.tag_name}`;
+      }
+      for (const asset of release.assets || []) {
+        if (/_arm64\.dmg$/.test(asset.name)) {
+          document.getElementById("dl-arm").href = asset.browser_download_url;
+        } else if (/_x86_64\.dmg$/.test(asset.name)) {
+          document.getElementById("dl-intel").href = asset.browser_download_url;
+        }
+      }
+    })
+    .catch(() => {});
+</script>
+</body>
+</html>
